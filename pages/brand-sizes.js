@@ -1,4 +1,5 @@
 const statusEl = document.getElementById("brand-status");
+const sourceEl = document.getElementById("brand-source");
 const resultsEl = document.getElementById("brand-results");
 const categorySelect = document.getElementById("category-select");
 const loadButton = document.getElementById("load-sizes-button");
@@ -21,6 +22,26 @@ async function fetchJson(path) {
   }
 
   return response.json();
+}
+
+function getUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+
+  return {
+    category: params.get("category"),
+    lang: params.get("lang"),
+    device: params.get("device"),
+    source: params.get("source")
+  };
+}
+
+function normalizeCategory(category) {
+  if (!category) return "";
+  const value = category.toLowerCase().trim();
+  if (value === "men" || value === "women" || value === "kids") {
+    return value;
+  }
+  return "";
 }
 
 function createTable(title, rows) {
@@ -117,4 +138,31 @@ async function loadBrandSizes() {
   }
 }
 
+function applyUrlParams() {
+  const params = getUrlParams();
+  const category = normalizeCategory(params.category);
+
+  if (category) {
+    categorySelect.value = category;
+  }
+
+  const parts = [];
+  if (params.source) parts.push(`Source: ${params.source}`);
+  if (params.device) parts.push(`Device: ${params.device}`);
+  if (params.lang) parts.push(`Language: ${params.lang}`);
+
+  sourceEl.textContent = parts.length ? parts.join(" | ") : "";
+
+  return { hasCategory: !!category };
+}
+
 loadButton.addEventListener("click", loadBrandSizes);
+
+window.addEventListener("DOMContentLoaded", async () => {
+  const info = applyUrlParams();
+
+  if (info.hasCategory) {
+    statusEl.textContent = "URL parameters detected. Loading brand size tables automatically...";
+    await loadBrandSizes();
+  }
+});
