@@ -145,12 +145,25 @@ async function runSearch() {
       });
 
     filteredProducts.sort((a, b) => {
-      const brandCompare = a.brandName.localeCompare(b.brandName);
-      if (brandCompare !== 0) return brandCompare;
-      return a.modelName.localeCompare(b.modelName);
-    });
+  const brandCompare = a.brandName.localeCompare(b.brandName);
+  if (brandCompare !== 0) return brandCompare;
+  return a.modelName.localeCompare(b.modelName);
+});
 
-    renderResults(filteredProducts);
+renderResults(filteredProducts);
+
+await logSearch(
+  modelFilter || sizeFilter || selectedCategory || selectedBrandId || "manual-search",
+  {
+    brand_id: selectedBrandId || null,
+    category: selectedCategory || null,
+    eu_size: sizeFilter || null,
+    model_name: modelFilter || null
+  },
+  filteredProducts.length
+);
+
+searchStatusEl.textContent = `Found ${filteredProducts.length} result(s).`;
     searchStatusEl.textContent = `Found ${filteredProducts.length} result(s).`;
   } catch (error) {
     console.error(error);
@@ -183,6 +196,18 @@ function applyUrlParams(brands) {
     }
   }
 
+async function logSearch(queryText, filters, resultsCount) {
+  try {
+    await insertRow("search_logs", {
+      query_text: queryText || null,
+      filters_json: filters,
+      results_count: resultsCount
+    });
+  } catch (error) {
+    console.error("Search log error:", error);
+  }
+}
+  
   const parts = [];
   if (params.source) parts.push(`Source: ${params.source}`);
   if (params.device) parts.push(`Device: ${params.device}`);
