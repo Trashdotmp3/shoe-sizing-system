@@ -256,6 +256,25 @@ function applyUrlParamsToForm() {
   };
 }
 
+async function logMeasurement(category, measuredLengthMm, generalRow) {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const lang = params.get("lang");
+    const device = params.get("device");
+
+    await insertRow("measurements", {
+      language: lang === "lt" ? "lt" : "en",
+      mode: category,
+      measured_length_mm: measuredLengthMm,
+      recommended_eu: generalRow?.eu ?? null,
+      recommended_brand_id: null,
+      device_id: device || null
+    });
+  } catch (error) {
+    console.error("Measurement log error:", error);
+  }
+}
+
 async function loadBrandRecommendations(category, measuredLengthMm) {
   const brandTargetMm = measuredLengthMm + 20;
 
@@ -305,15 +324,17 @@ async function handleRecommendation() {
 
     statusEl.textContent = "Calculating recommendation...";
 
-    const generalTable = generalSizeTables[category];
-    const generalRow = nearestRow(generalTable, measuredLengthMm);
-    renderGeneralResult(generalRow);
-    renderContinueActions(category, generalRow);
+const generalTable = generalSizeTables[category];
+const generalRow = nearestRow(generalTable, measuredLengthMm);
+renderGeneralResult(generalRow);
+renderContinueActions(category, generalRow);
 
-    const brandResults = await loadBrandRecommendations(category, measuredLengthMm);
-    renderBrandResults(brandResults);
+const brandResults = await loadBrandRecommendations(category, measuredLengthMm);
+renderBrandResults(brandResults);
 
-    statusEl.textContent = "Recommendation loaded successfully.";
+await logMeasurement(category, measuredLengthMm, generalRow);
+
+statusEl.textContent = "Recommendation loaded successfully.";
   } catch (error) {
     console.error(error);
     statusEl.textContent = `Error: ${error.message}`;
