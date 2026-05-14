@@ -5,6 +5,7 @@ const statusEl = document.getElementById("recommend-status");
 const recommendSourceEl = document.getElementById("recommend-source");
 const generalResultEl = document.getElementById("general-result");
 const brandResultsEl = document.getElementById("brand-recommendations");
+const continueActionsEl = document.getElementById("continue-actions");
 
 const SUPABASE_URL = window.SUPABASE_URL;
 const SUPABASE_KEY = window.SUPABASE_KEY;
@@ -105,6 +106,39 @@ function renderGeneralResult(row) {
     return;
   }
 
+function renderContinueActions(category, row) {
+  if (!row) {
+    continueActionsEl.innerHTML = "<p>No actions available.</p>";
+    return;
+  }
+
+  const params = new URLSearchParams();
+  params.set("category", category);
+  params.set("eu", row.eu);
+
+  const currentParams = new URLSearchParams(window.location.search);
+  const source = currentParams.get("source");
+  const device = currentParams.get("device");
+  const lang = currentParams.get("lang");
+
+  if (source) params.set("source", source);
+  if (device) params.set("device", device);
+  if (lang) params.set("lang", lang);
+
+  continueActionsEl.innerHTML = `
+    <div class="action-grid">
+      <a class="action-card" href="search.html?${params.toString()}">
+        <h3>Search shoes by recommended EU size</h3>
+        <p>Open shoe search with category "${category}" and EU size "${row.eu}".</p>
+      </a>
+      <a class="action-card" href="brand-sizes.html?category=${encodeURIComponent(category)}">
+        <h3>Open brand size tables</h3>
+        <p>Compare manufacturer size tables for the selected category.</p>
+      </a>
+    </div>
+  `;
+}
+  
   generalResultEl.innerHTML = `
     <div class="result-grid">
       <div><strong>EU:</strong> ${row.eu ?? ""}</div>
@@ -265,6 +299,7 @@ async function handleRecommendation() {
       statusEl.textContent = "Please enter a valid measured length in mm.";
       generalResultEl.innerHTML = "No result yet.";
       brandResultsEl.innerHTML = "No result yet.";
+      continueActionsEl.innerHTML = "No actions yet.";
       return;
     }
 
@@ -273,6 +308,7 @@ async function handleRecommendation() {
     const generalTable = generalSizeTables[category];
     const generalRow = nearestRow(generalTable, measuredLengthMm);
     renderGeneralResult(generalRow);
+    renderContinueActions(category, generalRow);
 
     const brandResults = await loadBrandRecommendations(category, measuredLengthMm);
     renderBrandResults(brandResults);
