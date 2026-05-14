@@ -9,11 +9,12 @@
 <body>
   <header class="site-header">
     <h1>Statistics</h1>
-    <p class="subtitle">Collected measurement and recommendation statistics</p>
+    <p class="subtitle">Collected measurement, QR, and search statistics</p>
   </header>
 
   <nav class="main-nav">
     <a href="../index.html">Home</a>
+    <a href="recommend.html">Recommendation</a>
     <a href="brand-sizes.html">Brand Sizes</a>
     <a href="qr.html">QR Page</a>
     <a href="search.html">Search</a>
@@ -22,9 +23,33 @@
 
   <main class="container">
     <section class="card">
-      <h2>Data overview</h2>
-      <p>This page will later visualize statistics from the database.</p>
+      <h2>Load statistics</h2>
+      <button id="load-stats-button">Load statistics</button>
+      <p id="stats-status">Ready.</p>
+    </section>
+
+    <section class="card">
+      <h2>Overview</h2>
+      <div id="stats-overview">No data loaded yet.</div>
+    </section>
+
+    <section class="card">
+      <h2>Measurements by mode</h2>
+      <div id="stats-modes">No data loaded yet.</div>
+    </section>
+
+    <section class="card">
+      <h2>Most common recommended EU sizes</h2>
+      <div id="stats-sizes">No data loaded yet.</div>
+    </section>
+
+    <section class="card">
+      <h2>Recent searches</h2>
+      <div id="stats-searches">No data loaded yet.</div>
     </section>
   </main>
+
+  <script src="../supabase-config.js"></script>
+  <script src="stats.js"></script>
 </body>
 </html>
