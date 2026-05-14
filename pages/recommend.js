@@ -2,6 +2,7 @@ const recommendButton = document.getElementById("recommend-button");
 const categoryEl = document.getElementById("category");
 const lengthEl = document.getElementById("length-mm");
 const statusEl = document.getElementById("recommend-status");
+const recommendSourceEl = document.getElementById("recommend-source");
 const generalResultEl = document.getElementById("general-result");
 const brandResultsEl = document.getElementById("brand-recommendations");
 
