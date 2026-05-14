@@ -76,3 +76,33 @@ button:hover {
   padding: 1.5rem;
   color: #475569;
 }
+
+select {
+  margin-left: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+}
+
+.size-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  overflow-x: auto;
+}
+
+.size-table th,
+.size-table td {
+  border: 1px solid #dbe2ea;
+  padding: 0.6rem;
+  text-align: left;
+}
+
+.size-table th {
+  background: #e2e8f0;
+}
+
+.size-table tr:nth-child(even) {
+  background: #f8fafc;
+}
