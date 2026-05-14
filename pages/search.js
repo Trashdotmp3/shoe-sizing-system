@@ -193,6 +193,24 @@ function applyUrlParams(brands) {
   return !!(normalizedCategory || params.eu || params.model || params.brand);
 }
 
+async function insertRow(table, payload) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Insert failed (${table}): ${response.status} ${text}`);
+  }
+}
+
 searchButtonEl.addEventListener("click", runSearch);
 
 window.addEventListener("DOMContentLoaded", async () => {
