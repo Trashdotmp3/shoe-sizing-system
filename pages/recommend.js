@@ -154,6 +154,74 @@ async function fetchJson(path) {
   return response.json();
 }
 
+function getUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+
+  return {
+    length: params.get("length"),
+    category: params.get("category"),
+    lang: params.get("lang"),
+    device: params.get("device"),
+    source: params.get("source")
+  };
+}
+
+function normalizeCategory(category) {
+  if (!category) return "";
+
+  const value = category.toLowerCase().trim();
+
+  if (value === "men" || value === "women" || value === "kids") {
+    return value;
+  }
+
+  return "";
+}
+
+function parseLength(value) {
+  if (!value) return null;
+
+  const normalized = String(value).replace(",", ".").trim();
+  const parsed = Number(normalized);
+
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return null;
+  }
+
+  return parsed;
+}
+
+function applyUrlParamsToForm() {
+  const params = getUrlParams();
+
+  const parsedCategory = normalizeCategory(params.category);
+  const parsedLength = parseLength(params.length);
+
+  if (parsedCategory) {
+    categoryEl.value = parsedCategory;
+  }
+
+  if (parsedLength !== null) {
+    lengthEl.value = parsedLength;
+  }
+
+  if (recommendSourceEl) {
+    const parts = [];
+
+    if (params.source) parts.push(`Source: ${params.source}`);
+    if (params.device) parts.push(`Device: ${params.device}`);
+    if (params.lang) parts.push(`Language: ${params.lang}`);
+
+    recommendSourceEl.textContent = parts.length ? parts.join(" | ") : "";
+  }
+
+  return {
+    hasAutoData: parsedCategory && parsedLength !== null,
+    parsedCategory,
+    parsedLength
+  };
+}
+
 async function loadBrandRecommendations(category, measuredLengthMm) {
   const brandTargetMm = measuredLengthMm + 20;
 
@@ -191,10 +259,12 @@ async function loadBrandRecommendations(category, measuredLengthMm) {
 async function handleRecommendation() {
   try {
     const category = categoryEl.value;
-    const measuredLengthMm = Number(lengthEl.value);
+    const measuredLengthMm = parseLength(lengthEl.value);
 
-    if (!measuredLengthMm || measuredLengthMm <= 0) {
+    if (measuredLengthMm === null) {
       statusEl.textContent = "Please enter a valid measured length in mm.";
+      generalResultEl.innerHTML = "No result yet.";
+      brandResultsEl.innerHTML = "No result yet.";
       return;
     }
 
@@ -215,3 +285,12 @@ async function handleRecommendation() {
 }
 
 recommendButton.addEventListener("click", handleRecommendation);
+
+window.addEventListener("DOMContentLoaded", async () => {
+  const autoData = applyUrlParamsToForm();
+
+  if (autoData.hasAutoData) {
+    statusEl.textContent = "QR parameters detected. Loading recommendation automatically...";
+    await handleRecommendation();
+  }
+});
