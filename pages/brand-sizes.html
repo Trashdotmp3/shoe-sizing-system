@@ -9,7 +9,7 @@
 <body>
   <header class="site-header">
     <h1>Brand Sizes</h1>
-    <p class="subtitle">Comparison of shoe size recommendations by manufacturer</p>
+    <p class="subtitle">Manufacturer size charts loaded from Supabase</p>
   </header>
 
   <nav class="main-nav">
@@ -22,14 +22,21 @@
 
   <main class="container">
     <section class="card">
-      <h2>Available brands</h2>
-      <ul>
-        <li>Nike</li>
-        <li>Adidas</li>
-        <li>New Balance</li>
-      </ul>
-      <p>This page will later display brand-specific size recommendations from the database.</p>
+      <h2>Choose category</h2>
+      <label for="category-select">Category:</label>
+      <select id="category-select">
+        <option value="men">Men</option>
+        <option value="women">Women</option>
+        <option value="kids">Kids</option>
+      </select>
+      <button id="load-sizes-button">Load brand sizes</button>
+      <p id="brand-status">Ready to load data.</p>
     </section>
+
+    <section id="brand-results" class="container"></section>
   </main>
+
+  <script src="../supabase-config.js"></script>
+  <script src="brand-sizes.js"></script>
 </body>
 </html>
