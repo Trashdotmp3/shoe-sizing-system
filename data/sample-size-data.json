@@ -1,0 +1,20 @@
+{
+  "brands": [
+    {
+      "name": "Nike",
+      "category": "men",
+      "sizes": [
+        { "foot_length_mm": 270, "eu": "42.5", "us": "9", "uk": "8" },
+        { "foot_length_mm": 275, "eu": "43", "us": "9.5", "uk": "8.5" }
+      ]
+    },
+    {
+      "name": "Adidas",
+      "category": "men",
+      "sizes": [
+        { "foot_length_mm": 270, "eu": "42 2/3", "us": "9", "uk": "8.5" },
+        { "foot_length_mm": 275, "eu": "43 1/3", "us": "9.5", "uk": "9" }
+      ]
+    }
+  ]
+}
