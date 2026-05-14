@@ -133,3 +133,12 @@ input[type="number"] {
   margin-top: 1rem;
   background: #f8fafc;
 }
+
+.brand-card a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.brand-card a:hover {
+  text-decoration: underline;
+}
