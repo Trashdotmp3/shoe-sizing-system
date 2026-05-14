@@ -5,6 +5,9 @@ const recommendationLink = document.getElementById("go-recommendation");
 const brandSizesLink = document.getElementById("go-brand-sizes");
 const searchLink = document.getElementById("go-search");
 
+const SUPABASE_URL = window.SUPABASE_URL;
+const SUPABASE_KEY = window.SUPABASE_KEY;
+
 function getParams() {
   const params = new URLSearchParams(window.location.search);
 
@@ -50,6 +53,21 @@ function buildForwardLinks(data) {
   searchLink.href = `search.html${suffix}`;
 }
 
+async function logQrScan(data) {
+  try {
+    await insertRow("qr_scans", {
+      device_id: data.device || null,
+      campaign: data.source || "qr-page",
+      landing_page: window.location.pathname,
+      user_agent: navigator.userAgent,
+      country: null,
+      region: null
+    });
+  } catch (error) {
+    console.error("QR log error:", error);
+  }
+}
+
 function initQrPage() {
   const data = getParams();
 
@@ -61,6 +79,8 @@ function initQrPage() {
   } else {
     qrStatusEl.textContent = "QR page opened without measurement parameters.";
   }
+
+  logQrScan(data);
 }
 
 async function insertRow(table, payload) {
