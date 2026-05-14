@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Size Recommendation</title>
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>Size Recommendation</h1>
+    <p class="subtitle">Find general and brand-specific size recommendations</p>
+  </header>
+
+  <nav class="main-nav">
+    <a href="../index.html">Home</a>
+    <a href="recommend.html">Recommendation</a>
+    <a href="brand-sizes.html">Brand Sizes</a>
+    <a href="qr.html">QR Page</a>
+    <a href="search.html">Search</a>
+    <a href="stats.html">Statistics</a>
+  </nav>
+
+  <main class="container">
+    <section class="card">
+      <h2>Enter measurement</h2>
+
+      <div class="form-row">
+        <label for="category">Category</label>
+        <select id="category">
+          <option value="men">Men</option>
+          <option value="women">Women</option>
+          <option value="kids">Kids</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="length-mm">Measured length (mm)</label>
+        <input id="length-mm" type="number" min="80" max="350" step="1" placeholder="e.g. 275" />
+      </div>
+
+      <button id="recommend-button">Get recommendation</button>
+      <p id="recommend-status">Ready.</p>
+    </section>
+
+    <section class="card">
+      <h2>General recommendation</h2>
+      <div id="general-result">No result yet.</div>
+    </section>
+
+    <section class="card">
+      <h2>Brand recommendations</h2>
+      <p>Brand sizes are calculated using measured length + 20 mm for comfort allowance.</p>
+      <div id="brand-recommendations">No result yet.</div>
+    </section>
+  </main>
+
+  <script src="../supabase-config.js"></script>
+  <script src="recommend.js"></script>
+</body>
+</html>
