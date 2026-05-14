@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Search</title>
+  <title>Shoe Search</title>
   <link rel="stylesheet" href="../styles.css" />
 </head>
 <body>
   <header class="site-header">
     <h1>Shoe Search</h1>
-    <p class="subtitle">Search shoes by brand, size, and category</p>
+    <p class="subtitle">Search shoes by brand, model, and size</p>
   </header>
 
   <nav class="main-nav">
     <a href="../index.html">Home</a>
+    <a href="recommend.html">Recommendation</a>
     <a href="brand-sizes.html">Brand Sizes</a>
     <a href="qr.html">QR Page</a>
     <a href="search.html">Search</a>
@@ -22,9 +23,47 @@
 
   <main class="container">
     <section class="card">
-      <h2>Search system</h2>
-      <p>This page will later contain filters and search fields connected to the database.</p>
+      <h2>Search filters</h2>
+
+      <div class="form-row">
+        <label for="brand-filter">Brand</label>
+        <select id="brand-filter">
+          <option value="">All brands</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="category-filter">Category</label>
+        <select id="category-filter">
+          <option value="">All categories</option>
+          <option value="men">Men</option>
+          <option value="women">Women</option>
+          <option value="kids">Kids</option>
+          <option value="unisex">Unisex</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="size-filter">EU size</label>
+        <input id="size-filter" type="text" placeholder="e.g. 44" />
+      </div>
+
+      <div class="form-row">
+        <label for="model-filter">Model name</label>
+        <input id="model-filter" type="text" placeholder="e.g. Air Max" />
+      </div>
+
+      <button id="search-button">Search shoes</button>
+      <p id="search-status">Ready.</p>
+    </section>
+
+    <section class="card">
+      <h2>Results</h2>
+      <div id="search-results">No search performed yet.</div>
     </section>
   </main>
+
+  <script src="../supabase-config.js"></script>
+  <script src="search.js"></script>
 </body>
 </html>
