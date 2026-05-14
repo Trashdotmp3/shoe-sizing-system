@@ -7,6 +7,7 @@ const sizeFilterEl = document.getElementById("size-filter");
 const modelFilterEl = document.getElementById("model-filter");
 const searchButtonEl = document.getElementById("search-button");
 const searchStatusEl = document.getElementById("search-status");
+const searchSourceEl = document.getElementById("search-source");
 const searchResultsEl = document.getElementById("search-results");
 
 async function fetchJson(path) {
@@ -26,20 +27,40 @@ async function fetchJson(path) {
   return response.json();
 }
 
-async function loadBrandsIntoFilter() {
-  try {
-    const brands = await fetchJson("brands?select=id,name&order=name.asc");
+function getUrlParams() {
+  const params = new URLSearchParams(window.location.search);
 
-    brands.forEach((brand) => {
-      const option = document.createElement("option");
-      option.value = String(brand.id);
-      option.textContent = brand.name;
-      brandFilterEl.appendChild(option);
-    });
-  } catch (error) {
-    console.error(error);
-    searchStatusEl.textContent = `Error loading brands: ${error.message}`;
+  return {
+    brand: params.get("brand"),
+    category: params.get("category"),
+    eu: params.get("eu"),
+    model: params.get("model"),
+    source: params.get("source"),
+    device: params.get("device"),
+    lang: params.get("lang")
+  };
+}
+
+function normalizeCategory(category) {
+  if (!category) return "";
+  const value = category.toLowerCase().trim();
+  if (["men", "women", "kids", "unisex"].includes(value)) {
+    return value;
   }
+  return "";
+}
+
+async function loadBrandsIntoFilter() {
+  const brands = await fetchJson("brands?select=id,name&order=name.asc");
+
+  brands.forEach((brand) => {
+    const option = document.createElement("option");
+    option.value = String(brand.id);
+    option.textContent = brand.name;
+    brandFilterEl.appendChild(option);
+  });
+
+  return brands;
 }
 
 function renderResults(items) {
@@ -89,18 +110,9 @@ async function runSearch() {
     const activeModels = shoeModels.filter((model) => model.is_active);
 
     const filteredModels = activeModels.filter((model) => {
-      if (selectedBrandId && String(model.brand_id) !== selectedBrandId) {
-        return false;
-      }
-
-      if (selectedCategory && (model.category || "").toLowerCase() !== selectedCategory) {
-        return false;
-      }
-
-      if (modelFilter && !(model.model_name || "").toLowerCase().includes(modelFilter)) {
-        return false;
-      }
-
+      if (selectedBrandId && String(model.brand_id) !== selectedBrandId) return false;
+      if (selectedCategory && (model.category || "").toLowerCase() !== selectedCategory) return false;
+      if (modelFilter && !(model.model_name || "").toLowerCase().includes(modelFilter)) return false;
       return true;
     });
 
@@ -146,6 +158,54 @@ async function runSearch() {
   }
 }
 
+function applyUrlParams(brands) {
+  const params = getUrlParams();
+
+  const normalizedCategory = normalizeCategory(params.category);
+  if (normalizedCategory) {
+    categoryFilterEl.value = normalizedCategory;
+  }
+
+  if (params.eu) {
+    sizeFilterEl.value = params.eu;
+  }
+
+  if (params.model) {
+    modelFilterEl.value = params.model;
+  }
+
+  if (params.brand) {
+    const brandMatch = brands.find(
+      (brand) => brand.name.toLowerCase() === params.brand.toLowerCase().trim()
+    );
+    if (brandMatch) {
+      brandFilterEl.value = String(brandMatch.id);
+    }
+  }
+
+  const parts = [];
+  if (params.source) parts.push(`Source: ${params.source}`);
+  if (params.device) parts.push(`Device: ${params.device}`);
+  if (params.lang) parts.push(`Language: ${params.lang}`);
+
+  searchSourceEl.textContent = parts.length ? parts.join(" | ") : "";
+
+  return !!(normalizedCategory || params.eu || params.model || params.brand);
+}
+
 searchButtonEl.addEventListener("click", runSearch);
 
-loadBrandsIntoFilter();
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const brands = await loadBrandsIntoFilter();
+    const shouldAutoSearch = applyUrlParams(brands);
+
+    if (shouldAutoSearch) {
+      searchStatusEl.textContent = "URL parameters detected. Running search automatically...";
+      await runSearch();
+    }
+  } catch (error) {
+    console.error(error);
+    searchStatusEl.textContent = `Error loading brands: ${error.message}`;
+  }
+});
