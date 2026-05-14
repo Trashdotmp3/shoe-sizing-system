@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QR Page</title>
+  <title>QR Landing Page</title>
   <link rel="stylesheet" href="../styles.css" />
 </head>
 <body>
   <header class="site-header">
-    <h1>QR Code Page</h1>
-    <p class="subtitle">Landing page for users scanning the device QR code</p>
+    <h1>Automatic Shoe Sizing System</h1>
+    <p class="subtitle">QR landing page for measurement results and further actions</p>
   </header>
 
   <nav class="main-nav">
     <a href="../index.html">Home</a>
+    <a href="recommend.html">Recommendation</a>
     <a href="brand-sizes.html">Brand Sizes</a>
     <a href="qr.html">QR Page</a>
     <a href="search.html">Search</a>
@@ -22,9 +23,48 @@
 
   <main class="container">
     <section class="card">
-      <h2>QR integration</h2>
-      <p>This page will later open when a user scans a QR code from the shoe sizing device.</p>
+      <h2>Welcome</h2>
+      <p>
+        This page is opened after scanning the QR code from the automatic shoe sizing system.
+        Here the user can continue to recommendation, compare brand sizes, and search for shoes.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Measurement summary</h2>
+      <div id="qr-measurement-summary">No measurement parameters provided.</div>
+    </section>
+
+    <section class="card">
+      <h2>Next actions</h2>
+      <div class="action-grid">
+        <a class="action-card" id="go-recommendation" href="recommend.html">
+          <h3>Recommendation</h3>
+          <p>View general and brand-specific size recommendation.</p>
+        </a>
+
+        <a class="action-card" id="go-brand-sizes" href="brand-sizes.html">
+          <h3>Brand Sizes</h3>
+          <p>Compare manufacturer shoe size tables.</p>
+        </a>
+
+        <a class="action-card" id="go-search" href="search.html">
+          <h3>Shoe Search</h3>
+          <p>Search shoes by brand, model, and size.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>About QR integration</h2>
+      <p>
+        The QR code can later redirect users directly to this page with measurement parameters,
+        for example foot length, selected category, device ID, or language.
+      </p>
+      <p id="qr-status">QR landing page ready.</p>
     </section>
   </main>
+
+  <script src="qr.js"></script>
 </body>
 </html>
