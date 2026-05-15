@@ -53,6 +53,7 @@ function getUrlParams() {
     category: params.get("category"),
     eu: params.get("eu"),
     model: params.get("model"),
+    length: params.get("length"),
     source: params.get("source"),
     device: params.get("device"),
     lang: params.get("lang")
@@ -68,6 +69,36 @@ function normalizeCategory(category) {
   }
 
   return "";
+}
+
+function parseLength(value) {
+  if (!value) return null;
+
+  const normalized = String(value).replace(",", ".").trim();
+  const parsed = Number(normalized);
+
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return null;
+  }
+
+  return parsed;
+}
+
+function nearestRow(rows, targetMm) {
+  if (!rows.length) return null;
+
+  let best = rows[0];
+  let bestDiff = Math.abs(Number(rows[0].foot_length_mm) - targetMm);
+
+  for (const row of rows) {
+    const diff = Math.abs(Number(row.foot_length_mm) - targetMm);
+    if (diff < bestDiff) {
+      best = row;
+      bestDiff = diff;
+    }
+  }
+
+  return best;
 }
 
 async function loadBrandsIntoFilter() {
@@ -98,9 +129,6 @@ function renderResults(items) {
         <div><strong>EU:</strong> ${item.eu_size ?? ""}</div>
         <div><strong>US:</strong> ${item.us_size ?? ""}</div>
         <div><strong>UK:</strong> ${item.uk_size ?? ""}</div>
-        <div><strong>Price:</strong> ${item.price != null ? `${item.price} ${item.currency ?? ""}` : ""}</div>
-        <div><strong>Merchant:</strong> ${item.merchantName ?? ""}</div>
-        <div><strong>Status:</strong> ${item.stock_status ?? ""}</div>
       </div>
       <p><a href="${item.product_url}" target="_blank" rel="noopener noreferrer">Open product page</a></p>
     </div>
@@ -119,10 +147,43 @@ async function logSearch(queryText, filters, resultsCount) {
   }
 }
 
+async function getBrandRecommendedEuMap(category, measuredLengthMm) {
+  const targetMm = measuredLengthMm + 20;
+
+  const [brands, sizeCharts, sizeChartRows] = await Promise.all([
+    fetchJson("brands?select=id,name"),
+    fetchJson(`size_charts?select=id,brand_id,category,region&category=eq.${category}&region=eq.global`),
+    fetchJson("size_chart_rows?select=size_chart_id,foot_length_mm,eu_size")
+  ]);
+
+  const brandMap = new Map(brands.map((b) => [b.id, b.name]));
+  const result = new Map();
+
+  for (const chart of sizeCharts) {
+    const brandName = brandMap.get(chart.brand_id);
+    if (!brandName) continue;
+
+    const rows = sizeChartRows
+      .filter((row) => row.size_chart_id === chart.id)
+      .sort((a, b) => Number(a.foot_length_mm) - Number(b.foot_length_mm));
+
+    const row = nearestRow(rows, targetMm);
+
+    if (row && row.eu_size) {
+      result.set(brandName, String(row.eu_size).trim());
+    }
+  }
+
+  return result;
+}
+
 async function runSearch() {
   try {
     searchStatusEl.textContent = "Searching...";
     searchResultsEl.innerHTML = "";
+
+    const params = getUrlParams();
+    const lengthFromUrl = parseLength(params.length);
 
     const [brands, shoeModels, merchants, products] = await Promise.all([
       fetchJson("brands?select=id,name"),
@@ -159,12 +220,28 @@ async function runSearch() {
 
     const modelMap = new Map(filteredModels.map((m) => [m.id, m]));
 
+    let brandRecommendedEuMap = null;
+
+    if (lengthFromUrl !== null && selectedCategory && ["men", "women", "kids"].includes(selectedCategory)) {
+      brandRecommendedEuMap = await getBrandRecommendedEuMap(selectedCategory, lengthFromUrl);
+    }
+
     const filteredProducts = products
       .filter((product) => modelMap.has(product.shoe_model_id))
       .filter((product) => {
+        const model = modelMap.get(product.shoe_model_id);
+        const brandName = brandMap.get(model.brand_id) || "";
+
+        if (brandRecommendedEuMap) {
+          const recommendedEu = brandRecommendedEuMap.get(brandName);
+          if (!recommendedEu) return false;
+          return String(product.eu_size || "").trim().toLowerCase() === recommendedEu.trim().toLowerCase();
+        }
+
         if (sizeFilter && !(product.eu_size || "").toLowerCase().includes(sizeFilter)) {
           return false;
         }
+
         return true;
       })
       .map((product) => {
@@ -199,12 +276,18 @@ async function runSearch() {
         brand_id: selectedBrandId || null,
         category: selectedCategory || null,
         eu_size: sizeFilter || null,
-        model_name: modelFilter || null
+        model_name: modelFilter || null,
+        measured_length_mm: lengthFromUrl,
+        brand_specific_search: !!brandRecommendedEuMap
       },
       filteredProducts.length
     );
 
-    searchStatusEl.textContent = `Found ${filteredProducts.length} result(s).`;
+    if (brandRecommendedEuMap) {
+      searchStatusEl.textContent = `Found ${filteredProducts.length} result(s) using brand-specific recommended sizes.`;
+    } else {
+      searchStatusEl.textContent = `Found ${filteredProducts.length} result(s).`;
+    }
   } catch (error) {
     console.error(error);
     searchStatusEl.textContent = `Search error: ${error.message}`;
@@ -240,10 +323,11 @@ function applyUrlParams(brands) {
   if (params.source) parts.push(`Source: ${params.source}`);
   if (params.device) parts.push(`Device: ${params.device}`);
   if (params.lang) parts.push(`Language: ${params.lang}`);
+  if (params.length) parts.push(`Measured length: ${params.length} mm`);
 
   searchSourceEl.textContent = parts.length ? parts.join(" | ") : "";
 
-  return !!(normalizedCategory || params.eu || params.model || params.brand);
+  return !!(normalizedCategory || params.eu || params.model || params.brand || params.length);
 }
 
 searchButtonEl.addEventListener("click", runSearch);
