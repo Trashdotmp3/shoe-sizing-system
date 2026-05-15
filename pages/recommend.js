@@ -100,77 +100,6 @@ function nearestRow(rows, targetMm) {
   return best;
 }
 
-function renderGeneralResult(row) {
-  if (!row) {
-    generalResultEl.innerHTML = "<p>No general recommendation found.</p>";
-    return;
-  }
-
-function renderContinueActions(category, row) {
-  if (!row) {
-    continueActionsEl.innerHTML = "<p>No actions available.</p>";
-    return;
-  }
-
-  const params = new URLSearchParams();
-  params.set("category", category);
-  params.set("eu", row.eu);
-
-  const currentParams = new URLSearchParams(window.location.search);
-  const source = currentParams.get("source");
-  const device = currentParams.get("device");
-  const lang = currentParams.get("lang");
-
-  if (source) params.set("source", source);
-  if (device) params.set("device", device);
-  if (lang) params.set("lang", lang);
-
-  continueActionsEl.innerHTML = `
-    <div class="action-grid">
-      <a class="action-card" href="search.html?${params.toString()}">
-        <h3>Search shoes by recommended EU size</h3>
-        <p>Open shoe search with category "${category}" and EU size "${row.eu}".</p>
-      </a>
-      <a class="action-card" href="brand-sizes.html?category=${encodeURIComponent(category)}">
-        <h3>Open brand size tables</h3>
-        <p>Compare manufacturer size tables for the selected category.</p>
-      </a>
-    </div>
-  `;
-}
-  
-  generalResultEl.innerHTML = `
-    <div class="result-grid">
-      <div><strong>EU:</strong> ${row.eu ?? ""}</div>
-      <div><strong>US:</strong> ${row.us ?? ""}</div>
-      <div><strong>UK:</strong> ${row.uk ?? ""}</div>
-      <div><strong>AUS:</strong> ${row.aus ?? ""}</div>
-      <div><strong>JAP:</strong> ${row.jap ?? ""}</div>
-      <div><strong>CHN:</strong> ${row.chn ?? ""}</div>
-      <div><strong>MEX:</strong> ${row.mex ?? ""}</div>
-      <div><strong>KOR:</strong> ${row.kor ?? ""}</div>
-    </div>
-  `;
-}
-
-function renderBrandResults(results) {
-  if (!results.length) {
-    brandResultsEl.innerHTML = "<p>No brand recommendations found.</p>";
-    return;
-  }
-
-  brandResultsEl.innerHTML = results.map((item) => `
-    <div class="brand-card">
-      <h3>${item.brandName}</h3>
-      <div class="result-grid">
-        <div><strong>EU:</strong> ${item.row?.eu_size ?? ""}</div>
-        <div><strong>US:</strong> ${item.row?.us_size ?? ""}</div>
-        <div><strong>UK:</strong> ${item.row?.uk_size ?? ""}</div>
-      </div>
-    </div>
-  `).join("");
-}
-
 async function fetchJson(path) {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     headers: {
@@ -186,6 +115,24 @@ async function fetchJson(path) {
   }
 
   return response.json();
+}
+
+async function insertRow(table, payload) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Insert failed (${table}): ${response.status} ${text}`);
+  }
 }
 
 function getUrlParams() {
@@ -204,7 +151,6 @@ function normalizeCategory(category) {
   if (!category) return "";
 
   const value = category.toLowerCase().trim();
-
   if (value === "men" || value === "women" || value === "kids") {
     return value;
   }
@@ -241,38 +187,96 @@ function applyUrlParamsToForm() {
 
   if (recommendSourceEl) {
     const parts = [];
-
     if (params.source) parts.push(`Source: ${params.source}`);
     if (params.device) parts.push(`Device: ${params.device}`);
     if (params.lang) parts.push(`Language: ${params.lang}`);
-
     recommendSourceEl.textContent = parts.length ? parts.join(" | ") : "";
   }
 
   return {
-    hasAutoData: parsedCategory && parsedLength !== null,
+    hasAutoData: !!parsedCategory && parsedLength !== null,
     parsedCategory,
     parsedLength
   };
 }
 
-async function logMeasurement(category, measuredLengthMm, generalRow) {
-  try {
-    const params = new URLSearchParams(window.location.search);
-    const lang = params.get("lang");
-    const device = params.get("device");
-
-    await insertRow("measurements", {
-      language: lang === "lt" ? "lt" : "en",
-      mode: category,
-      measured_length_mm: measuredLengthMm,
-      recommended_eu: generalRow?.eu ?? null,
-      recommended_brand_id: null,
-      device_id: device || null
-    });
-  } catch (error) {
-    console.error("Measurement log error:", error);
+function renderGeneralResult(row) {
+  if (!row) {
+    generalResultEl.innerHTML = "<p>No general recommendation found.</p>";
+    return;
   }
+
+  generalResultEl.innerHTML = `
+    <div class="result-grid">
+      <div><strong>EU:</strong> ${row.eu ?? ""}</div>
+      <div><strong>US:</strong> ${row.us ?? ""}</div>
+      <div><strong>UK:</strong> ${row.uk ?? ""}</div>
+      <div><strong>AUS:</strong> ${row.aus ?? ""}</div>
+      <div><strong>JAP:</strong> ${row.jap ?? ""}</div>
+      <div><strong>CHN:</strong> ${row.chn ?? ""}</div>
+      <div><strong>MEX:</strong> ${row.mex ?? ""}</div>
+      <div><strong>KOR:</strong> ${row.kor ?? ""}</div>
+    </div>
+  `;
+}
+
+function renderContinueActions(category, row) {
+  if (!continueActionsEl) return;
+
+  if (!row) {
+    continueActionsEl.innerHTML = "<p>No actions available.</p>";
+    return;
+  }
+
+  const params = new URLSearchParams();
+  params.set("category", category);
+  params.set("eu", row.eu);
+
+  const currentParams = new URLSearchParams(window.location.search);
+  const source = currentParams.get("source");
+  const device = currentParams.get("device");
+  const lang = currentParams.get("lang");
+
+  if (source) params.set("source", source);
+  if (device) params.set("device", device);
+  if (lang) params.set("lang", lang);
+
+  const brandParams = new URLSearchParams();
+  brandParams.set("category", category);
+  if (source) brandParams.set("source", source);
+  if (device) brandParams.set("device", device);
+  if (lang) brandParams.set("lang", lang);
+
+  continueActionsEl.innerHTML = `
+    <div class="action-grid">
+      <a class="action-card" href="search.html?${params.toString()}">
+        <h3>Search shoes by recommended EU size</h3>
+        <p>Open shoe search with category "${category}" and EU size "${row.eu}".</p>
+      </a>
+      <a class="action-card" href="brand-sizes.html?${brandParams.toString()}">
+        <h3>Open brand size tables</h3>
+        <p>Compare manufacturer size tables for the selected category.</p>
+      </a>
+    </div>
+  `;
+}
+
+function renderBrandResults(results) {
+  if (!results.length) {
+    brandResultsEl.innerHTML = "<p>No brand recommendations found.</p>";
+    return;
+  }
+
+  brandResultsEl.innerHTML = results.map((item) => `
+    <div class="brand-card">
+      <h3>${item.brandName}</h3>
+      <div class="result-grid">
+        <div><strong>EU:</strong> ${item.row?.eu_size ?? ""}</div>
+        <div><strong>US:</strong> ${item.row?.us_size ?? ""}</div>
+        <div><strong>UK:</strong> ${item.row?.uk_size ?? ""}</div>
+      </div>
+    </div>
+  `).join("");
 }
 
 async function loadBrandRecommendations(category, measuredLengthMm) {
@@ -309,6 +313,25 @@ async function loadBrandRecommendations(category, measuredLengthMm) {
   return results;
 }
 
+async function logMeasurement(category, measuredLengthMm, generalRow) {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const lang = params.get("lang");
+    const device = params.get("device");
+
+    await insertRow("measurements", {
+      language: lang === "lt" ? "lt" : "en",
+      mode: category,
+      measured_length_mm: measuredLengthMm,
+      recommended_eu: generalRow?.eu ?? null,
+      recommended_brand_id: null,
+      device_id: device || null
+    });
+  } catch (error) {
+    console.error("Measurement log error:", error);
+  }
+}
+
 async function handleRecommendation() {
   try {
     const category = categoryEl.value;
@@ -318,44 +341,29 @@ async function handleRecommendation() {
       statusEl.textContent = "Please enter a valid measured length in mm.";
       generalResultEl.innerHTML = "No result yet.";
       brandResultsEl.innerHTML = "No result yet.";
-      continueActionsEl.innerHTML = "No actions yet.";
+      if (continueActionsEl) {
+        continueActionsEl.innerHTML = "No actions yet.";
+      }
       return;
     }
 
     statusEl.textContent = "Calculating recommendation...";
 
-const generalTable = generalSizeTables[category];
-const generalRow = nearestRow(generalTable, measuredLengthMm);
-renderGeneralResult(generalRow);
-renderContinueActions(category, generalRow);
+    const generalTable = generalSizeTables[category];
+    const generalRow = nearestRow(generalTable, measuredLengthMm);
 
-const brandResults = await loadBrandRecommendations(category, measuredLengthMm);
-renderBrandResults(brandResults);
+    renderGeneralResult(generalRow);
+    renderContinueActions(category, generalRow);
 
-await logMeasurement(category, measuredLengthMm, generalRow);
+    const brandResults = await loadBrandRecommendations(category, measuredLengthMm);
+    renderBrandResults(brandResults);
 
-statusEl.textContent = "Recommendation loaded successfully.";
+    await logMeasurement(category, measuredLengthMm, generalRow);
+
+    statusEl.textContent = "Recommendation loaded successfully.";
   } catch (error) {
     console.error(error);
     statusEl.textContent = `Error: ${error.message}`;
-  }
-}
-
-async function insertRow(table, payload) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Insert failed (${table}): ${response.status} ${text}`);
   }
 }
 
