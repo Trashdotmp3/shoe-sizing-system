@@ -27,6 +27,24 @@ async function fetchJson(path) {
   return response.json();
 }
 
+async function insertRow(table, payload) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Insert failed (${table}): ${response.status} ${text}`);
+  }
+}
+
 function getUrlParams() {
   const params = new URLSearchParams(window.location.search);
 
@@ -43,10 +61,12 @@ function getUrlParams() {
 
 function normalizeCategory(category) {
   if (!category) return "";
+
   const value = category.toLowerCase().trim();
   if (["men", "women", "kids", "unisex"].includes(value)) {
     return value;
   }
+
   return "";
 }
 
@@ -87,6 +107,18 @@ function renderResults(items) {
   `).join("");
 }
 
+async function logSearch(queryText, filters, resultsCount) {
+  try {
+    await insertRow("search_logs", {
+      query_text: queryText || null,
+      filters_json: filters,
+      results_count: resultsCount
+    });
+  } catch (error) {
+    console.error("Search log error:", error);
+  }
+}
+
 async function runSearch() {
   try {
     searchStatusEl.textContent = "Searching...";
@@ -110,9 +142,18 @@ async function runSearch() {
     const activeModels = shoeModels.filter((model) => model.is_active);
 
     const filteredModels = activeModels.filter((model) => {
-      if (selectedBrandId && String(model.brand_id) !== selectedBrandId) return false;
-      if (selectedCategory && (model.category || "").toLowerCase() !== selectedCategory) return false;
-      if (modelFilter && !(model.model_name || "").toLowerCase().includes(modelFilter)) return false;
+      if (selectedBrandId && String(model.brand_id) !== selectedBrandId) {
+        return false;
+      }
+
+      if (selectedCategory && (model.category || "").toLowerCase() !== selectedCategory) {
+        return false;
+      }
+
+      if (modelFilter && !(model.model_name || "").toLowerCase().includes(modelFilter)) {
+        return false;
+      }
+
       return true;
     });
 
@@ -145,25 +186,24 @@ async function runSearch() {
       });
 
     filteredProducts.sort((a, b) => {
-  const brandCompare = a.brandName.localeCompare(b.brandName);
-  if (brandCompare !== 0) return brandCompare;
-  return a.modelName.localeCompare(b.modelName);
-});
+      const brandCompare = a.brandName.localeCompare(b.brandName);
+      if (brandCompare !== 0) return brandCompare;
+      return a.modelName.localeCompare(b.modelName);
+    });
 
-renderResults(filteredProducts);
+    renderResults(filteredProducts);
 
-await logSearch(
-  modelFilter || sizeFilter || selectedCategory || selectedBrandId || "manual-search",
-  {
-    brand_id: selectedBrandId || null,
-    category: selectedCategory || null,
-    eu_size: sizeFilter || null,
-    model_name: modelFilter || null
-  },
-  filteredProducts.length
-);
+    await logSearch(
+      modelFilter || sizeFilter || selectedCategory || selectedBrandId || "manual-search",
+      {
+        brand_id: selectedBrandId || null,
+        category: selectedCategory || null,
+        eu_size: sizeFilter || null,
+        model_name: modelFilter || null
+      },
+      filteredProducts.length
+    );
 
-searchStatusEl.textContent = `Found ${filteredProducts.length} result(s).`;
     searchStatusEl.textContent = `Found ${filteredProducts.length} result(s).`;
   } catch (error) {
     console.error(error);
@@ -196,18 +236,6 @@ function applyUrlParams(brands) {
     }
   }
 
-async function logSearch(queryText, filters, resultsCount) {
-  try {
-    await insertRow("search_logs", {
-      query_text: queryText || null,
-      filters_json: filters,
-      results_count: resultsCount
-    });
-  } catch (error) {
-    console.error("Search log error:", error);
-  }
-}
-  
   const parts = [];
   if (params.source) parts.push(`Source: ${params.source}`);
   if (params.device) parts.push(`Device: ${params.device}`);
@@ -216,24 +244,6 @@ async function logSearch(queryText, filters, resultsCount) {
   searchSourceEl.textContent = parts.length ? parts.join(" | ") : "";
 
   return !!(normalizedCategory || params.eu || params.model || params.brand);
-}
-
-async function insertRow(table, payload) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Insert failed (${table}): ${response.status} ${text}`);
-  }
 }
 
 searchButtonEl.addEventListener("click", runSearch);
