@@ -73,7 +73,6 @@ function renderRecentSearches(searchLogs) {
     <div class="brand-card">
       <div><strong>Query:</strong> ${item.query_text ?? ""}</div>
       <div><strong>Results:</strong> ${item.results_count ?? 0}</div>
-      <div><strong>Time:</strong> ${item.created_at ?? ""}</div>
     </div>
   `).join("");
 }
