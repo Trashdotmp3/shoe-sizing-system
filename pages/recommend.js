@@ -228,18 +228,22 @@ function renderContinueActions(category, row) {
     return;
   }
 
-  const params = new URLSearchParams();
-  params.set("category", category);
-  params.set("eu", row.eu);
-
   const currentParams = new URLSearchParams(window.location.search);
   const source = currentParams.get("source");
   const device = currentParams.get("device");
   const lang = currentParams.get("lang");
+  const length = parseLength(lengthEl.value);
 
-  if (source) params.set("source", source);
-  if (device) params.set("device", device);
-  if (lang) params.set("lang", lang);
+  const searchParams = new URLSearchParams();
+  searchParams.set("category", category);
+
+  if (length !== null) {
+    searchParams.set("length", String(length));
+  }
+
+  if (source) searchParams.set("source", source);
+  if (device) searchParams.set("device", device);
+  if (lang) searchParams.set("lang", lang);
 
   const brandParams = new URLSearchParams();
   brandParams.set("category", category);
@@ -249,9 +253,9 @@ function renderContinueActions(category, row) {
 
   continueActionsEl.innerHTML = `
     <div class="action-grid">
-      <a class="action-card" href="search.html?${params.toString()}">
-        <h3>Search shoes by recommended EU size</h3>
-        <p>Open shoe search with category "${category}" and EU size "${row.eu}".</p>
+      <a class="action-card" href="search.html?${searchParams.toString()}">
+        <h3>Search shoes by brand recommendation</h3>
+        <p>Open shoe search using manufacturer-specific recommended sizes.</p>
       </a>
       <a class="action-card" href="brand-sizes.html?${brandParams.toString()}">
         <h3>Open brand size tables</h3>
