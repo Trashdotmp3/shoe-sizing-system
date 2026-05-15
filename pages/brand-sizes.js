@@ -7,6 +7,12 @@ const loadButton = document.getElementById("load-sizes-button");
 const SUPABASE_URL = window.SUPABASE_URL;
 const SUPABASE_KEY = window.SUPABASE_KEY;
 
+function getRecommendedFootLength(rowLengthMm) {
+  const value = Number(rowLengthMm);
+  if (!Number.isFinite(value)) return "";
+  return Math.max(0, value - 20);
+}
+
 async function fetchJson(path) {
   const response = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     headers: {
@@ -38,9 +44,11 @@ function getUrlParams() {
 function normalizeCategory(category) {
   if (!category) return "";
   const value = category.toLowerCase().trim();
+
   if (value === "men" || value === "women" || value === "kids") {
     return value;
   }
+
   return "";
 }
 
@@ -51,6 +59,10 @@ function createTable(title, rows) {
   const heading = document.createElement("h2");
   heading.textContent = title;
   section.appendChild(heading);
+
+  const note = document.createElement("p");
+  note.textContent = "Displayed length is adjusted for recommendation with 20 mm comfort allowance.";
+  section.appendChild(note);
 
   if (!rows.length) {
     const empty = document.createElement("p");
@@ -65,7 +77,7 @@ function createTable(title, rows) {
   const thead = document.createElement("thead");
   thead.innerHTML = `
     <tr>
-      <th>Foot length (mm)</th>
+      <th>Recommended foot length (mm)</th>
       <th>EU</th>
       <th>US</th>
       <th>UK</th>
@@ -81,9 +93,11 @@ function createTable(title, rows) {
   const tbody = document.createElement("tbody");
 
   rows.forEach((row) => {
+    const recommendedLength = getRecommendedFootLength(row.foot_length_mm);
+
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${row.foot_length_mm ?? ""}</td>
+      <td>${recommendedLength}</td>
       <td>${row.eu_size ?? ""}</td>
       <td>${row.us_size ?? ""}</td>
       <td>${row.uk_size ?? ""}</td>
@@ -131,7 +145,7 @@ async function loadBrandSizes() {
       resultsEl.appendChild(createTable(item.brandName, item.rows));
     });
 
-    statusEl.textContent = `Loaded ${chartsWithRows.length} brand size tables for "${selectedCategory}".`;
+    statusEl.textContent = `Loaded ${chartsWithRows.length} recommended brand size tables with 20 mm allowance for "${selectedCategory}".`;
   } catch (error) {
     console.error(error);
     statusEl.textContent = `Error loading data: ${error.message}`;
@@ -154,24 +168,6 @@ function applyUrlParams() {
   sourceEl.textContent = parts.length ? parts.join(" | ") : "";
 
   return { hasCategory: !!category };
-}
-
-async function insertRow(table, payload) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Insert failed (${table}): ${response.status} ${text}`);
-  }
 }
 
 loadButton.addEventListener("click", loadBrandSizes);
