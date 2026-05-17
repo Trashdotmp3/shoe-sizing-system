@@ -1,3 +1,6 @@
+const t = window.t;
+const tf = window.tf;
+
 const SUPABASE_URL = window.SUPABASE_URL;
 const SUPABASE_KEY = window.SUPABASE_KEY;
 
@@ -116,7 +119,7 @@ async function loadBrandsIntoFilter() {
 
 function renderResults(items) {
   if (!items.length) {
-    searchResultsEl.innerHTML = "<p>No matching shoes found.</p>";
+    searchResultsEl.innerHTML = `<p>${t("search.noResults")}</p>`;
     return;
   }
 
@@ -124,13 +127,13 @@ function renderResults(items) {
     <div class="brand-card">
       <h3>${item.brandName} - ${item.modelName}</h3>
       <div class="result-grid">
-        <div><strong>Category:</strong> ${item.category ?? ""}</div>
-        <div><strong>Color:</strong> ${item.color ?? ""}</div>
-        <div><strong>EU:</strong> ${item.eu_size ?? ""}</div>
-        <div><strong>US:</strong> ${item.us_size ?? ""}</div>
-        <div><strong>UK:</strong> ${item.uk_size ?? ""}</div>
+        <div><strong>${t("common.category")}:</strong> ${item.category ?? ""}</div>
+        <div><strong>${t("common.color")}:</strong> ${item.color ?? ""}</div>
+        <div><strong>${t("common.eu")}:</strong> ${item.eu_size ?? ""}</div>
+        <div><strong>${t("common.us")}:</strong> ${item.us_size ?? ""}</div>
+        <div><strong>${t("common.uk")}:</strong> ${item.uk_size ?? ""}</div>
       </div>
-      <p><a href="${item.product_url}" target="_blank" rel="noopener noreferrer">Open product page</a></p>
+      <p><a href="${item.product_url}" target="_blank" rel="noopener noreferrer">${t("common.openProductPage")}</a></p>
     </div>
   `).join("");
 }
@@ -179,7 +182,7 @@ async function getBrandRecommendedEuMap(category, measuredLengthMm) {
 
 async function runSearch() {
   try {
-    searchStatusEl.textContent = "Searching...";
+    searchStatusEl.textContent = t("search.statusSearching");
     searchResultsEl.innerHTML = "";
 
     const params = getUrlParams();
@@ -284,9 +287,9 @@ async function runSearch() {
     );
 
     if (brandRecommendedEuMap) {
-      searchStatusEl.textContent = `Found ${filteredProducts.length} result(s) using brand-specific recommended sizes.`;
+      searchStatusEl.textContent = tf("search.statusFoundBrand", { count: filteredProducts.length });
     } else {
-      searchStatusEl.textContent = `Found ${filteredProducts.length} result(s).`;
+      searchStatusEl.textContent = tf("search.statusFound", { count: filteredProducts.length });
     }
   } catch (error) {
     console.error(error);
@@ -320,10 +323,10 @@ function applyUrlParams(brands) {
   }
 
   const parts = [];
-  if (params.source) parts.push(`Source: ${params.source}`);
-  if (params.device) parts.push(`Device: ${params.device}`);
+  if (params.source) parts.push(`${t("common.source")}: ${params.source}`);
+  if (params.device) parts.push(`${t("common.device")}: ${params.device}`);
   if (params.lang) parts.push(`Language: ${params.lang}`);
-  if (params.length) parts.push(`Measured length: ${params.length} mm`);
+  if (params.length) parts.push(`${t("common.measuredLength")}: ${params.length} mm`);
 
   searchSourceEl.textContent = parts.length ? parts.join(" | ") : "";
 
@@ -338,11 +341,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     const shouldAutoSearch = applyUrlParams(brands);
 
     if (shouldAutoSearch) {
-      searchStatusEl.textContent = "URL parameters detected. Running search automatically...";
+      searchStatusEl.textContent = t("search.statusAuto");
       await runSearch();
     }
   } catch (error) {
     console.error(error);
     searchStatusEl.textContent = `Error loading brands: ${error.message}`;
   }
+});
+
+window.addEventListener("languageChanged", () => {
+  location.reload();
 });
