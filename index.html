@@ -10,8 +10,7 @@
   <header class="site-header">
     <h1>Automatic Shoe Sizing System</h1>
     <p class="subtitle">
-      Bachelor project website for automatic foot measurement, shoe size recommendation,
-      brand-specific size comparison, product search, QR integration, and statistics collection.
+      A web platform for shoe size recommendation, brand size comparison, and shoe search.
     </p>
   </header>
 
@@ -25,154 +24,26 @@
   </nav>
 
   <main class="container">
-    <section class="hero-panel">
-      <article class="hero-card">
-        <h2>Project overview</h2>
-        <p class="hero-text">
-          This system combines an embedded foot measurement device with a web platform.
-          The device measures foot length, determines the recommended shoe size,
-          and transfers the user to the website through a QR code for further comparison,
-          manufacturer-specific sizing, and shoe search.
-        </p>
-
-        <div class="hero-actions">
-          <a class="button" href="pages/recommend.html">Open recommendation tool</a>
-          <a class="button secondary" href="pages/search.html">Search shoes</a>
-        </div>
-      </article>
-
-      <aside class="hero-card highlight-box">
-        <h2>Core idea</h2>
-        <div class="badge-row">
-          <span class="badge">Foot length measurement</span>
-          <span class="badge">Brand size tables</span>
-          <span class="badge">QR integration</span>
-          <span class="badge">Search system</span>
-          <span class="badge">Usage statistics</span>
-        </div>
-      </aside>
-    </section>
-
-    <section class="kpi-grid">
-      <div class="kpi">
-        <strong>3</strong>
-        <span>Integrated brand size tables</span>
-      </div>
-      <div class="kpi">
-        <strong>1</strong>
-        <span>Automatic measurement device</span>
-      </div>
-      <div class="kpi">
-        <strong>4</strong>
-        <span>Main web functions already prototyped</span>
-      </div>
-      <div class="kpi">
-        <strong>DB</strong>
-        <span>Supabase-based data storage and statistics</span>
-      </div>
-    </section>
-
-    <section class="two-col">
-      <article class="card">
-        <h2>Main system functions</h2>
-        <ul class="clean-list">
-          <li>Foot length based general shoe size recommendation</li>
-          <li>Manufacturer size comparison for Nike, Adidas, and New Balance</li>
-          <li>QR landing page for transition from physical device to website</li>
-          <li>Shoe product search by size, brand, category, and model</li>
-          <li>Statistics collection for measurements, QR scans, and search activity</li>
-        </ul>
-      </article>
-
-      <article class="card">
-        <h2>System architecture</h2>
-        <ul class="clean-list">
-          <li>Embedded measuring device with IR distance sensor and LCD interface</li>
-          <li>Frontend website hosted from GitHub repository</li>
-          <li>Supabase PostgreSQL database for size charts, products, and statistics</li>
-          <li>Database-driven recommendation, comparison, and search workflow</li>
-        </ul>
-      </article>
+    <section class="card">
+      <h2>About</h2>
+      <p>
+        This website is part of an automatic shoe sizing system.
+        It helps users get a shoe size recommendation, compare sizes across brands,
+        and search for suitable shoes.
+      </p>
     </section>
 
     <section class="card">
-      <h2>User flow</h2>
-      <div class="step-list">
-        <div class="step-item">
-          <div class="step-number">1</div>
-          <div class="step-content">
-            <strong>Measure foot length</strong>
-            <p>The user places the foot into the prototype device and the system measures the distance automatically.</p>
-          </div>
-        </div>
-
-        <div class="step-item">
-          <div class="step-number">2</div>
-          <div class="step-content">
-            <strong>Get a recommended size</strong>
-            <p>The system calculates a general size recommendation and can adapt it to men, women, or kids categories.</p>
-          </div>
-        </div>
-
-        <div class="step-item">
-          <div class="step-number">3</div>
-          <div class="step-content">
-            <strong>Continue on the website</strong>
-            <p>By scanning a QR code, the user opens the website and receives additional information about brand-specific sizes and available shoes.</p>
-          </div>
-        </div>
-
-        <div class="step-item">
-          <div class="step-number">4</div>
-          <div class="step-content">
-            <strong>Search and compare</strong>
-            <p>The user can compare size charts, search for products, and use the website as a continuation of the measurement process.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="two-col">
-      <article class="card">
-        <h2>Open the implemented pages</h2>
-        <div class="action-grid">
-          <a class="action-card" href="pages/recommend.html">
-            <h3>Recommendation</h3>
-            <p>Calculate general and brand-specific shoe size recommendations.</p>
-          </a>
-          <a class="action-card" href="pages/brand-sizes.html">
-            <h3>Brand Sizes</h3>
-            <p>Browse manufacturer size charts stored in the database.</p>
-          </a>
-          <a class="action-card" href="pages/search.html">
-            <h3>Search</h3>
-            <p>Find available shoes by size, category, brand, and model.</p>
-          </a>
-          <a class="action-card" href="pages/stats.html">
-            <h3>Statistics</h3>
-            <p>Review measurement, search, and QR code usage statistics.</p>
-          </a>
-        </div>
-      </article>
-
-      <article class="card">
-        <h2>Current implementation status</h2>
-        <p class="hero-text" id="status-text">
-          The website structure, database integration, recommendation logic, QR landing page,
-          search system, and statistics pages have already been implemented at prototype level.
-        </p>
-        <button id="test-button">Check interaction</button>
-      </article>
+      <h2>Main functions</h2>
+      <ul class="clean-list">
+        <li>Shoe size recommendation</li>
+        <li>Brand size comparison</li>
+        <li>QR code landing page</li>
+        <li>Shoe search</li>
+        <li>Statistics overview</li>
+      </ul>
     </section>
   </main>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <p><strong>Automatic Shoe Sizing System</strong></p>
-      <p>Bachelor project prototype website</p>
-      <p id="footer-year"></p>
-    </div>
-  </footer>
 
   <script src="script.js"></script>
 </body>
