@@ -10,9 +10,6 @@
         statistics: "Statistics"
       },
       common: {
-        language: "Language",
-        lithuanian: "Lithuanian",
-        english: "English",
         men: "Men",
         women: "Women",
         kids: "Kids",
@@ -87,25 +84,6 @@
         noData: "No data found.",
         recommendedLength: "Recommended foot length (mm)"
       },
-      search: {
-        title: "Shoe Search",
-        subtitle: "Search shoes by brand, model, and size",
-        filtersTitle: "Search filters",
-        brandLabel: "Brand",
-        categoryLabel: "Category",
-        sizeLabel: "EU size",
-        sizePlaceholder: "e.g. 44",
-        modelLabel: "Model name",
-        modelPlaceholder: "e.g. Air Max",
-        button: "Search shoes",
-        statusReady: "Ready.",
-        statusSearching: "Searching...",
-        statusAuto: "URL parameters detected. Running search automatically...",
-        statusFound: "Found {count} result(s).",
-        statusFoundBrand: "Found {count} result(s) using brand-specific recommended sizes.",
-        noResults: "No matching shoes found.",
-        noSearch: "No search performed yet."
-      },
       qr: {
         title: "QR Landing Page",
         subtitle: "QR landing page for measurement results and further actions",
@@ -145,6 +123,25 @@
         totalSearches: "Total searches",
         query: "Query",
         results: "Results"
+      },
+      search: {
+        title: "Shoe Search",
+        subtitle: "Search shoes by brand, model, and size",
+        filtersTitle: "Search filters",
+        brandLabel: "Brand",
+        categoryLabel: "Category",
+        sizeLabel: "EU size",
+        sizePlaceholder: "e.g. 44",
+        modelLabel: "Model name",
+        modelPlaceholder: "e.g. Air Max",
+        button: "Search shoes",
+        statusReady: "Ready.",
+        statusSearching: "Searching...",
+        statusAuto: "URL parameters detected. Running search automatically...",
+        statusFound: "Found {count} result(s).",
+        statusFoundBrand: "Found {count} result(s) using brand-specific recommended sizes.",
+        noResults: "No matching shoes found.",
+        noSearch: "No search performed yet."
       }
     },
     lt: {
@@ -157,9 +154,6 @@
         statistics: "Statistika"
       },
       common: {
-        language: "Kalba",
-        lithuanian: "Lietuvių",
-        english: "Anglų",
         men: "Vyrai",
         women: "Moterys",
         kids: "Vaikai",
@@ -234,25 +228,6 @@
         noData: "Duomenų nerasta.",
         recommendedLength: "Rekomenduojamas pėdos ilgis (mm)"
       },
-      search: {
-        title: "Batų paieška",
-        subtitle: "Ieškok batų pagal gamintoją, modelį ir dydį",
-        filtersTitle: "Paieškos filtrai",
-        brandLabel: "Gamintojas",
-        categoryLabel: "Kategorija",
-        sizeLabel: "EU dydis",
-        sizePlaceholder: "pvz. 44",
-        modelLabel: "Modelio pavadinimas",
-        modelPlaceholder: "pvz. Air Max",
-        button: "Ieškoti batų",
-        statusReady: "Pasiruošta.",
-        statusSearching: "Vykdoma paieška...",
-        statusAuto: "Aptikti URL parametrai. Paieška paleidžiama automatiškai...",
-        statusFound: "Rasta {count} rezultatų.",
-        statusFoundBrand: "Rasta {count} rezultatų pagal gamintojų rekomenduojamus dydžius.",
-        noResults: "Tinkančių batų nerasta.",
-        noSearch: "Paieška dar nevykdyta."
-      },
       qr: {
         title: "QR nukreipimo puslapis",
         subtitle: "QR puslapis matavimo rezultatams ir tolimesniems veiksmams",
@@ -292,6 +267,25 @@
         totalSearches: "Iš viso paieškų",
         query: "Užklausa",
         results: "Rezultatai"
+      },
+      search: {
+        title: "Batų paieška",
+        subtitle: "Ieškok batų pagal gamintoją, modelį ir dydį",
+        filtersTitle: "Paieškos filtrai",
+        brandLabel: "Gamintojas",
+        categoryLabel: "Kategorija",
+        sizeLabel: "EU dydis",
+        sizePlaceholder: "pvz. 44",
+        modelLabel: "Modelio pavadinimas",
+        modelPlaceholder: "pvz. Air Max",
+        button: "Ieškoti batų",
+        statusReady: "Pasiruošta.",
+        statusSearching: "Vykdoma paieška...",
+        statusAuto: "Aptikti URL parametrai. Paieška paleidžiama automatiškai...",
+        statusFound: "Rasta {count} rezultatų.",
+        statusFoundBrand: "Rasta {count} rezultatų pagal gamintojų rekomenduojamus dydžius.",
+        noResults: "Tinkančių batų nerasta.",
+        noSearch: "Paieška dar nevykdyta."
       }
     }
   };
@@ -331,21 +325,14 @@
       el.placeholder = t(el.dataset.i18nPlaceholder);
     });
 
-    document.querySelectorAll("[data-i18n-html]").forEach((el) => {
-      el.innerHTML = t(el.dataset.i18nHtml);
-    });
-
     document.querySelectorAll("[data-lang-button]").forEach((btn) => {
-      const current = getLanguage();
-      btn.classList.toggle("active", btn.dataset.langButton === current);
+      btn.classList.toggle("active", btn.dataset.langButton === getLanguage());
     });
-
-    window.dispatchEvent(new CustomEvent("languageChanged", { detail: { lang: getLanguage() } }));
   }
 
   function setLanguage(lang) {
     localStorage.setItem("site-language", lang);
-    translatePage();
+    location.reload();
   }
 
   document.addEventListener("click", (event) => {
