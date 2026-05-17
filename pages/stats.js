@@ -1,3 +1,5 @@
+const t = window.t;
+
 const SUPABASE_URL = window.SUPABASE_URL;
 const SUPABASE_KEY = window.SUPABASE_KEY;
 
@@ -38,6 +40,13 @@ function countBy(items, key) {
     .sort((a, b) => b.count - a.count);
 }
 
+function translateModeLabel(label) {
+  if (label === "men") return t("common.men");
+  if (label === "women") return t("common.women");
+  if (label === "kids") return t("common.kids");
+  return label;
+}
+
 function renderSimpleList(target, items, emptyText) {
   if (!items.length) {
     target.innerHTML = `<p>${emptyText}</p>`;
@@ -46,7 +55,7 @@ function renderSimpleList(target, items, emptyText) {
 
   target.innerHTML = `
     <ul>
-      ${items.map(item => `<li><strong>${item.label}</strong>: ${item.count}</li>`).join("")}
+      ${items.map(item => `<li><strong>${translateModeLabel(item.label)}</strong>: ${item.count}</li>`).join("")}
     </ul>
   `;
 }
@@ -54,16 +63,16 @@ function renderSimpleList(target, items, emptyText) {
 function renderOverview(measurements, qrScans, searchLogs) {
   statsOverviewEl.innerHTML = `
     <div class="result-grid">
-      <div><strong>Total measurements:</strong> ${measurements.length}</div>
-      <div><strong>Total QR scans:</strong> ${qrScans.length}</div>
-      <div><strong>Total searches:</strong> ${searchLogs.length}</div>
+      <div><strong>${t("stats.totalMeasurements")}:</strong> ${measurements.length}</div>
+      <div><strong>${t("stats.totalQrScans")}:</strong> ${qrScans.length}</div>
+      <div><strong>${t("stats.totalSearches")}:</strong> ${searchLogs.length}</div>
     </div>
   `;
 }
 
 function renderRecentSearches(searchLogs) {
   if (!searchLogs.length) {
-    statsSearchesEl.innerHTML = "<p>No search data found.</p>";
+    statsSearchesEl.innerHTML = `<p>${t("stats.noSearchData")}</p>`;
     return;
   }
 
@@ -71,55 +80,41 @@ function renderRecentSearches(searchLogs) {
 
   statsSearchesEl.innerHTML = recent.map(item => `
     <div class="brand-card">
-      <div><strong>Query:</strong> ${item.query_text ?? ""}</div>
-      <div><strong>Results:</strong> ${item.results_count ?? 0}</div>
+      <div><strong>${t("stats.query")}:</strong> ${item.query_text ?? ""}</div>
+      <div><strong>${t("stats.results")}:</strong> ${item.results_count ?? 0}</div>
     </div>
   `).join("");
 }
 
 async function loadStatistics() {
   try {
-    statsStatusEl.textContent = "Loading statistics...";
+    statsStatusEl.textContent = t("stats.statusLoading");
 
     const [measurements, qrScans, searchLogs] = await Promise.all([
       fetchJson("measurements?select=created_at,language,mode,measured_length_mm,recommended_eu&order=created_at.desc"),
       fetchJson("qr_scans?select=created_at,device_id,campaign,landing_page,country,region&order=created_at.desc"),
-      fetchJson("search_logs?select=created_at,query_text,results_count&order=created_at.desc")
+      fetchJson("search_logs?select=query_text,results_count&order=created_at.desc")
     ]);
 
     renderOverview(measurements, qrScans, searchLogs);
 
     const modeCounts = countBy(measurements, "mode");
-    renderSimpleList(statsModesEl, modeCounts, "No measurement mode data found.");
+    renderSimpleList(statsModesEl, modeCounts, t("stats.noData"));
 
     const sizeCounts = countBy(measurements, "recommended_eu").slice(0, 10);
-    renderSimpleList(statsSizesEl, sizeCounts, "No size recommendation data found.");
+    renderSimpleList(statsSizesEl, sizeCounts, t("stats.noData"));
 
     renderRecentSearches(searchLogs);
 
-    statsStatusEl.textContent = "Statistics loaded successfully.";
+    statsStatusEl.textContent = t("stats.statusSuccess");
   } catch (error) {
     console.error(error);
     statsStatusEl.textContent = `Error loading statistics: ${error.message}`;
   }
 }
 
-async function insertRow(table, payload) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Insert failed (${table}): ${response.status} ${text}`);
-  }
-}
-
 loadStatsButton.addEventListener("click", loadStatistics);
+
+window.addEventListener("languageChanged", () => {
+  location.reload();
+});
