@@ -349,7 +349,3 @@ window.addEventListener("DOMContentLoaded", async () => {
     searchStatusEl.textContent = `Error loading brands: ${error.message}`;
   }
 });
-
-window.addEventListener("languageChanged", () => {
-  location.reload();
-});
