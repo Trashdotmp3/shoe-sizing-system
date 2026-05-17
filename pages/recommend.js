@@ -188,13 +188,9 @@ function applyUrlParamsToForm() {
     lengthEl.value = parsedLength;
   }
 
-  if (recommendSourceEl) {
-    const parts = [];
-    if (params.source) parts.push(`${t("common.source")}: ${params.source}`);
-    if (params.device) parts.push(`${t("common.device")}: ${params.device}`);
-    if (params.lang) parts.push(`Language: ${params.lang}`);
-    recommendSourceEl.textContent = parts.length ? parts.join(" | ") : "";
-  }
+if (recommendSourceEl) {
+  recommendSourceEl.textContent = "";
+}
 
   return {
     hasAutoData: !!parsedCategory && parsedLength !== null,
