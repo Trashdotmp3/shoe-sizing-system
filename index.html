@@ -8,40 +8,47 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>Automatic Shoe Sizing System</h1>
+    <h1 data-i18n="home.title">Automatic Shoe Sizing System</h1>
+    <p class="subtitle" data-i18n="home.subtitle">
+      A web platform for shoe size recommendation, brand size comparison, and shoe search.
+    </p>
+
+    <div class="lang-switch">
+      <button class="lang-btn" data-lang-button="lt">LT</button>
+      <button class="lang-btn" data-lang-button="en">EN</button>
+    </div>
   </header>
 
   <nav class="main-nav">
-    <a href="index.html">Home</a>
-    <a href="pages/recommend.html">Recommendation</a>
-    <a href="pages/brand-sizes.html">Brand Sizes</a>
-    <a href="pages/qr.html">QR Page</a>
-    <a href="pages/search.html">Search</a>
-    <a href="pages/stats.html">Statistics</a>
+    <a href="index.html" data-i18n="nav.home">Home</a>
+    <a href="pages/recommend.html" data-i18n="nav.recommendation">Recommendation</a>
+    <a href="pages/brand-sizes.html" data-i18n="nav.brandSizes">Brand Sizes</a>
+    <a href="pages/qr.html" data-i18n="nav.qrPage">QR Page</a>
+    <a href="pages/search.html" data-i18n="nav.search">Search</a>
+    <a href="pages/stats.html" data-i18n="nav.statistics">Statistics</a>
   </nav>
 
   <main class="container">
     <section class="card">
-      <h2>About</h2>
-      <p>
-        This website is part of an automatic shoe sizing system.
-        It helps users get a shoe size recommendation, compare sizes across brands,
-        and search for suitable shoes.
+      <h2 data-i18n="home.aboutTitle">About</h2>
+      <p data-i18n="home.aboutText">
+        This website is part of an automatic shoe sizing system. It helps users get a shoe size recommendation, compare sizes across brands, and search for suitable shoes.
       </p>
     </section>
 
     <section class="card">
-      <h2>Main functions</h2>
+      <h2 data-i18n="home.functionsTitle">Main functions</h2>
       <ul class="clean-list">
-        <li>Shoe size recommendation</li>
-        <li>Brand size comparison</li>
-        <li>QR code landing page</li>
-        <li>Shoe search</li>
-        <li>Statistics overview</li>
+        <li data-i18n="home.func1">Shoe size recommendation</li>
+        <li data-i18n="home.func2">Brand size comparison</li>
+        <li data-i18n="home.func3">QR code landing page</li>
+        <li data-i18n="home.func4">Shoe search</li>
+        <li data-i18n="home.func5">Statistics overview</li>
       </ul>
     </section>
   </main>
 
+  <script src="lang.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
