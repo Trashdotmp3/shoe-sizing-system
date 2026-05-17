@@ -370,10 +370,35 @@ async function handleRecommendation() {
   }
 }
 
+async function logQrScanFromRecommend() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const source = params.get("source");
+    const device = params.get("device");
+
+    if (!source && !device) {
+      return;
+    }
+
+    await insertRow("qr_scans", {
+      device_id: device || null,
+      campaign: source || "recommend-qr",
+      landing_page: window.location.pathname,
+      user_agent: navigator.userAgent,
+      country: null,
+      region: null
+    });
+  } catch (error) {
+    console.error("QR log error:", error);
+  }
+}
+
 recommendButton.addEventListener("click", handleRecommendation);
 
 window.addEventListener("DOMContentLoaded", async () => {
   const autoData = applyUrlParamsToForm();
+
+  await logQrScanFromRecommend();
 
   if (autoData.hasAutoData) {
     statusEl.textContent = t("recommend.statusCalculating");
