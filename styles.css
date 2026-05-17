@@ -368,3 +368,24 @@ select {
     position: static;
   }
 }
+.lang-switch {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 0.75rem;
+}
+
+.lang-btn {
+  padding: 0.45rem 0.8rem;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  cursor: pointer;
+}
+
+.lang-btn.active {
+  background: white;
+  color: #0f172a;
+  border-color: white;
+}
