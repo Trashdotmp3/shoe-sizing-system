@@ -1,3 +1,6 @@
+const t = window.t;
+const tf = window.tf;
+
 const recommendButton = document.getElementById("recommend-button");
 const categoryEl = document.getElementById("category");
 const lengthEl = document.getElementById("length-mm");
@@ -149,8 +152,8 @@ function getUrlParams() {
 
 function normalizeCategory(category) {
   if (!category) return "";
-
   const value = category.toLowerCase().trim();
+
   if (value === "men" || value === "women" || value === "kids") {
     return value;
   }
@@ -187,8 +190,8 @@ function applyUrlParamsToForm() {
 
   if (recommendSourceEl) {
     const parts = [];
-    if (params.source) parts.push(`Source: ${params.source}`);
-    if (params.device) parts.push(`Device: ${params.device}`);
+    if (params.source) parts.push(`${t("common.source")}: ${params.source}`);
+    if (params.device) parts.push(`${t("common.device")}: ${params.device}`);
     if (params.lang) parts.push(`Language: ${params.lang}`);
     recommendSourceEl.textContent = parts.length ? parts.join(" | ") : "";
   }
@@ -202,20 +205,20 @@ function applyUrlParamsToForm() {
 
 function renderGeneralResult(row) {
   if (!row) {
-    generalResultEl.innerHTML = "<p>No general recommendation found.</p>";
+    generalResultEl.innerHTML = `<p>${t("recommend.noGeneral")}</p>`;
     return;
   }
 
   generalResultEl.innerHTML = `
     <div class="result-grid">
-      <div><strong>EU:</strong> ${row.eu ?? ""}</div>
-      <div><strong>US:</strong> ${row.us ?? ""}</div>
-      <div><strong>UK:</strong> ${row.uk ?? ""}</div>
-      <div><strong>AUS:</strong> ${row.aus ?? ""}</div>
-      <div><strong>JAP:</strong> ${row.jap ?? ""}</div>
-      <div><strong>CHN:</strong> ${row.chn ?? ""}</div>
-      <div><strong>MEX:</strong> ${row.mex ?? ""}</div>
-      <div><strong>KOR:</strong> ${row.kor ?? ""}</div>
+      <div><strong>${t("common.eu")}:</strong> ${row.eu ?? ""}</div>
+      <div><strong>${t("common.us")}:</strong> ${row.us ?? ""}</div>
+      <div><strong>${t("common.uk")}:</strong> ${row.uk ?? ""}</div>
+      <div><strong>${t("common.aus")}:</strong> ${row.aus ?? ""}</div>
+      <div><strong>${t("common.jp")}:</strong> ${row.jap ?? ""}</div>
+      <div><strong>${t("common.cn")}:</strong> ${row.chn ?? ""}</div>
+      <div><strong>${t("common.mx")}:</strong> ${row.mex ?? ""}</div>
+      <div><strong>${t("common.kr")}:</strong> ${row.kor ?? ""}</div>
     </div>
   `;
 }
@@ -224,7 +227,7 @@ function renderContinueActions(category, row) {
   if (!continueActionsEl) return;
 
   if (!row) {
-    continueActionsEl.innerHTML = "<p>No actions available.</p>";
+    continueActionsEl.innerHTML = `<p>${t("recommend.continueEmpty")}</p>`;
     return;
   }
 
@@ -254,12 +257,12 @@ function renderContinueActions(category, row) {
   continueActionsEl.innerHTML = `
     <div class="action-grid">
       <a class="action-card" href="search.html?${searchParams.toString()}">
-        <h3>Search shoes by brand recommendation</h3>
-        <p>Open shoe search using manufacturer-specific recommended sizes.</p>
+        <h3>${t("recommend.continueSearchTitle")}</h3>
+        <p>${t("recommend.continueSearchText")}</p>
       </a>
       <a class="action-card" href="brand-sizes.html?${brandParams.toString()}">
-        <h3>Open brand size tables</h3>
-        <p>Compare manufacturer size tables for the selected category.</p>
+        <h3>${t("recommend.continueBrandsTitle")}</h3>
+        <p>${t("recommend.continueBrandsText")}</p>
       </a>
     </div>
   `;
@@ -267,7 +270,7 @@ function renderContinueActions(category, row) {
 
 function renderBrandResults(results) {
   if (!results.length) {
-    brandResultsEl.innerHTML = "<p>No brand recommendations found.</p>";
+    brandResultsEl.innerHTML = `<p>${t("recommend.noBrand")}</p>`;
     return;
   }
 
@@ -275,9 +278,9 @@ function renderBrandResults(results) {
     <div class="brand-card">
       <h3>${item.brandName}</h3>
       <div class="result-grid">
-        <div><strong>EU:</strong> ${item.row?.eu_size ?? ""}</div>
-        <div><strong>US:</strong> ${item.row?.us_size ?? ""}</div>
-        <div><strong>UK:</strong> ${item.row?.uk_size ?? ""}</div>
+        <div><strong>${t("common.eu")}:</strong> ${item.row?.eu_size ?? ""}</div>
+        <div><strong>${t("common.us")}:</strong> ${item.row?.us_size ?? ""}</div>
+        <div><strong>${t("common.uk")}:</strong> ${item.row?.uk_size ?? ""}</div>
       </div>
     </div>
   `).join("");
@@ -342,16 +345,16 @@ async function handleRecommendation() {
     const measuredLengthMm = parseLength(lengthEl.value);
 
     if (measuredLengthMm === null) {
-      statusEl.textContent = "Please enter a valid measured length in mm.";
-      generalResultEl.innerHTML = "No result yet.";
-      brandResultsEl.innerHTML = "No result yet.";
+      statusEl.textContent = t("recommend.statusInvalid");
+      generalResultEl.innerHTML = t("recommend.generalEmpty");
+      brandResultsEl.innerHTML = t("recommend.brandEmpty");
       if (continueActionsEl) {
-        continueActionsEl.innerHTML = "No actions yet.";
+        continueActionsEl.innerHTML = t("recommend.continueEmpty");
       }
       return;
     }
 
-    statusEl.textContent = "Calculating recommendation...";
+    statusEl.textContent = t("recommend.statusCalculating");
 
     const generalTable = generalSizeTables[category];
     const generalRow = nearestRow(generalTable, measuredLengthMm);
@@ -364,7 +367,7 @@ async function handleRecommendation() {
 
     await logMeasurement(category, measuredLengthMm, generalRow);
 
-    statusEl.textContent = "Recommendation loaded successfully.";
+    statusEl.textContent = t("recommend.statusSuccess");
   } catch (error) {
     console.error(error);
     statusEl.textContent = `Error: ${error.message}`;
@@ -377,7 +380,11 @@ window.addEventListener("DOMContentLoaded", async () => {
   const autoData = applyUrlParamsToForm();
 
   if (autoData.hasAutoData) {
-    statusEl.textContent = "QR parameters detected. Loading recommendation automatically...";
+    statusEl.textContent = t("recommend.statusCalculating");
     await handleRecommendation();
   }
+});
+
+window.addEventListener("languageChanged", () => {
+  location.reload();
 });
