@@ -9,7 +9,10 @@
 <body>
   <header class="site-header">
     <h1>Statistics</h1>
-    <p class="subtitle">Collected measurement, QR, and search statistics</p>
+    <div class="lang-switch">
+  <button class="lang-btn" data-lang-button="lt">LT</button>
+  <button class="lang-btn" data-lang-button="en">EN</button>
+</div>
   </header>
 
 <nav class="main-nav">
@@ -48,7 +51,8 @@
       <div id="stats-searches">No data loaded yet.</div>
     </section>
   </main>
-
+  
+<script src="../lang.js"></script>
   <script src="../supabase-config.js"></script>
   <script src="stats.js"></script>
 </body>
