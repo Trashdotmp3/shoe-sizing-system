@@ -191,7 +191,3 @@ window.addEventListener("DOMContentLoaded", async () => {
     await loadBrandSizes();
   }
 });
-
-window.addEventListener("languageChanged", () => {
-  location.reload();
-});
