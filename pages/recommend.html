@@ -8,7 +8,7 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>Size Recommendation</h1>
+    <h1 data-i18n="recommend.title">Size Recommendation</h1>
     <div class="lang-switch">
   <button class="lang-btn" data-lang-button="lt">LT</button>
   <button class="lang-btn" data-lang-button="en">EN</button>
@@ -26,41 +26,41 @@
 
   <main class="container">
     <section class="card">
-      <h2>Enter measurement</h2>
+      <h2 data-i18n="recommend.enterTitle">Enter measurement</h2>
 
       <div class="form-row">
-        <label for="category">Category</label>
+        <label for="category" data-i18n="recommend.categoryLabel">Category</label>
         <select id="category">
-          <option value="men">Men</option>
-          <option value="women">Women</option>
-          <option value="kids">Kids</option>
-        </select>
+  <option value="men" data-i18n="common.men">Men</option>
+  <option value="women" data-i18n="common.women">Women</option>
+  <option value="kids" data-i18n="common.kids">Kids</option>
+</select>
       </div>
 
       <div class="form-row">
-        <label for="length-mm">Measured length (mm)</label>
-        <input id="length-mm" type="number" min="80" max="350" step="1" placeholder="e.g. 275" />
+        <label for="length-mm" data-i18n="recommend.lengthLabel">Measured length (mm)</label>
+        <input id="length-mm" type="number" min="80" max="350" step="1" data-i18n-placeholder="recommend.lengthPlaceholder" placeholder="e.g. 275" />
       </div>
 
-<button id="recommend-button">Get recommendation</button>
-<p id="recommend-status">Ready.</p>
+<button id="recommend-button" data-i18n="recommend.button">Get recommendation</button>
+<p id="recommend-status" data-i18n="recommend.statusReady">Ready.</p>
 <p id="recommend-source"></p>
     </section>
 
     <section class="card">
-      <h2>General recommendation</h2>
-      <div id="general-result">No result yet.</div>
+      <h2 data-i18n="recommend.generalTitle">General recommendation</h2>
+      <div id="general-result" data-i18n="recommend.generalEmpty">No result yet.</div>
     </section>
 
     <section class="card">
-  <h2>Continue</h2>
-  <div id="continue-actions">No actions yet.</div>
+  <h2 data-i18n="recommend.continueTitle">Continue</h2>
+  <div id="continue-actions" data-i18n="recommend.continueEmpty">No actions yet.</div>
 </section>
     
     <section class="card">
-      <h2>Brand recommendations</h2>
-      <p>Brand sizes are calculated using measured length + 20 mm for comfort allowance.</p>
-      <div id="brand-recommendations">No result yet.</div>
+      <h2 data-i18n="recommend.brandTitle">Brand recommendations</h2>
+<p data-i18n="recommend.brandNote">Brand sizes are calculated using measured length + 20 mm for comfort allowance.</p>
+<div id="brand-recommendations" data-i18n="recommend.brandEmpty">No result yet.</div>
     </section>
   </main>
   
