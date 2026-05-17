@@ -8,7 +8,7 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>Shoe Search</h1>
+    <h1 data-i18n="search.title">Shoe Search</h1>
     <div class="lang-switch">
   <button class="lang-btn" data-lang-button="lt">LT</button>
   <button class="lang-btn" data-lang-button="en">EN</button>
@@ -26,44 +26,44 @@
 
   <main class="container">
     <section class="card">
-      <h2>Search filters</h2>
+      <h2 data-i18n="search.filtersTitle">Search filters</h2>
 
       <div class="form-row">
-        <label for="brand-filter">Brand</label>
+        <label for="brand-filter" data-i18n="search.brandLabel">Brand</label>
         <select id="brand-filter">
-          <option value="">All brands</option>
-        </select>
+  <option value="" data-i18n="common.allBrands">All brands</option>
+</select>
       </div>
 
       <div class="form-row">
-        <label for="category-filter">Category</label>
+        <label for="category-filter" data-i18n="search.categoryLabel">Category</label>
         <select id="category-filter">
-          <option value="">All categories</option>
-          <option value="men">Men</option>
-          <option value="women">Women</option>
-          <option value="kids">Kids</option>
-          <option value="unisex">Unisex</option>
-        </select>
+  <option value="" data-i18n="common.allCategories">All categories</option>
+  <option value="men" data-i18n="common.men">Men</option>
+  <option value="women" data-i18n="common.women">Women</option>
+  <option value="kids" data-i18n="common.kids">Kids</option>
+  <option value="unisex" data-i18n="common.unisex">Unisex</option>
+</select>
       </div>
 
       <div class="form-row">
-        <label for="size-filter">EU size</label>
-        <input id="size-filter" type="text" placeholder="e.g. 44" />
+        <label for="size-filter" data-i18n="search.sizeLabel">EU size</label>
+        <input id="size-filter" type="text" data-i18n-placeholder="search.sizePlaceholder" placeholder="e.g. 44" />
       </div>
 
       <div class="form-row">
-        <label for="model-filter">Model name</label>
-        <input id="model-filter" type="text" placeholder="e.g. Air Max" />
+        <label for="model-filter" data-i18n="search.modelLabel">Model name</label>
+<input id="model-filter" type="text" data-i18n-placeholder="search.modelPlaceholder" placeholder="e.g. Air Max" />
       </div>
 
-      <button id="search-button">Search shoes</button>
-      <p id="search-status">Ready.</p>
+      <button id="search-button" data-i18n="search.button">Search shoes</button>
+<p id="search-status" data-i18n="search.statusReady">Ready.</p>
       <p id="search-source"></p>
     </section>
 
     <section class="card">
-      <h2>Results</h2>
-      <div id="search-results">No search performed yet.</div>
+      <h2 data-i18n="common.results">Results</h2>
+     <div id="search-results" data-i18n="search.noSearch">No search performed yet.</div>
     </section>
   </main>
   
