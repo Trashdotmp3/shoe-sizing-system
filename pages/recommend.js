@@ -384,7 +384,3 @@ window.addEventListener("DOMContentLoaded", async () => {
     await handleRecommendation();
   }
 });
-
-window.addEventListener("languageChanged", () => {
-  location.reload();
-});
