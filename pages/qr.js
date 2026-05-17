@@ -104,7 +104,3 @@ function initQrPage() {
 }
 
 initQrPage();
-
-window.addEventListener("languageChanged", () => {
-  location.reload();
-});
