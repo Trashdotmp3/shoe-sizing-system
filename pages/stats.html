@@ -8,51 +8,52 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>Statistics</h1>
+    <h1 data-i18n="stats.title">Statistics</h1>
+
     <div class="lang-switch">
-  <button class="lang-btn" data-lang-button="lt">LT</button>
-  <button class="lang-btn" data-lang-button="en">EN</button>
-</div>
+      <button class="lang-btn" data-lang-button="lt">LT</button>
+      <button class="lang-btn" data-lang-button="en">EN</button>
+    </div>
   </header>
 
-<nav class="main-nav">
-  <a href="../index.html">Home</a>
-  <a href="recommend.html">Recommendation</a>
-  <a href="brand-sizes.html">Brand Sizes</a>
-  <a href="qr.html">QR Page</a>
-  <a href="search.html">Search</a>
-  <a href="stats.html">Statistics</a>
-</nav>
+  <nav class="main-nav">
+    <a href="../index.html" data-i18n="nav.home">Home</a>
+    <a href="recommend.html" data-i18n="nav.recommendation">Recommendation</a>
+    <a href="brand-sizes.html" data-i18n="nav.brandSizes">Brand Sizes</a>
+    <a href="qr.html" data-i18n="nav.qrPage">QR Page</a>
+    <a href="search.html" data-i18n="nav.search">Search</a>
+    <a href="stats.html" data-i18n="nav.statistics">Statistics</a>
+  </nav>
 
   <main class="container">
     <section class="card">
-      <h2>Load statistics</h2>
-      <button id="load-stats-button">Load statistics</button>
-      <p id="stats-status">Ready.</p>
+      <h2 data-i18n="stats.loadTitle">Load statistics</h2>
+      <button id="load-stats-button" data-i18n="stats.loadButton">Load statistics</button>
+      <p id="stats-status" data-i18n="stats.statusReady">Ready.</p>
     </section>
 
     <section class="card">
-      <h2>Overview</h2>
-      <div id="stats-overview">No data loaded yet.</div>
+      <h2 data-i18n="stats.overviewTitle">Overview</h2>
+      <div id="stats-overview" data-i18n="stats.noData">No data loaded yet.</div>
     </section>
 
     <section class="card">
-      <h2>Measurements by mode</h2>
-      <div id="stats-modes">No data loaded yet.</div>
+      <h2 data-i18n="stats.measurementsByModeTitle">Measurements by category</h2>
+      <div id="stats-modes" data-i18n="stats.noData">No data loaded yet.</div>
     </section>
 
     <section class="card">
-      <h2>Most common recommended EU sizes</h2>
-      <div id="stats-sizes">No data loaded yet.</div>
+      <h2 data-i18n="stats.commonSizesTitle">Most common recommended EU sizes</h2>
+      <div id="stats-sizes" data-i18n="stats.noData">No data loaded yet.</div>
     </section>
 
     <section class="card">
-      <h2>Recent searches</h2>
-      <div id="stats-searches">No data loaded yet.</div>
+      <h2 data-i18n="stats.recentSearchesTitle">Recent searches</h2>
+      <div id="stats-searches" data-i18n="stats.noData">No data loaded yet.</div>
     </section>
   </main>
-  
-<script src="../lang.js"></script>
+
+  <script src="../lang.js"></script>
   <script src="../supabase-config.js"></script>
   <script src="stats.js"></script>
 </body>
