@@ -8,66 +8,67 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>Automatic Shoe Sizing System</h1>
+    <h1 data-i18n="qr.title">QR Landing Page</h1>
+
     <div class="lang-switch">
-  <button class="lang-btn" data-lang-button="lt">LT</button>
-  <button class="lang-btn" data-lang-button="en">EN</button>
-</div>
+      <button class="lang-btn" data-lang-button="lt">LT</button>
+      <button class="lang-btn" data-lang-button="en">EN</button>
+    </div>
   </header>
 
-<nav class="main-nav">
-  <a href="../index.html">Home</a>
-  <a href="recommend.html">Recommendation</a>
-  <a href="brand-sizes.html">Brand Sizes</a>
-  <a href="qr.html">QR Page</a>
-  <a href="search.html">Search</a>
-  <a href="stats.html">Statistics</a>
-</nav>
+  <nav class="main-nav">
+    <a href="../index.html" data-i18n="nav.home">Home</a>
+    <a href="recommend.html" data-i18n="nav.recommendation">Recommendation</a>
+    <a href="brand-sizes.html" data-i18n="nav.brandSizes">Brand Sizes</a>
+    <a href="qr.html" data-i18n="nav.qrPage">QR Page</a>
+    <a href="search.html" data-i18n="nav.search">Search</a>
+    <a href="stats.html" data-i18n="nav.statistics">Statistics</a>
+  </nav>
 
   <main class="container">
     <section class="card">
-      <h2>Welcome</h2>
-      <p>
-        This page is opened after scanning the QR code from the automatic shoe sizing system.
-        Here the user can continue to recommendation, compare brand sizes, and search for shoes.
+      <h2 data-i18n="qr.welcomeTitle">Welcome</h2>
+      <p data-i18n="qr.welcomeText">
+        This page is opened after scanning the QR code from the automatic shoe sizing system. Here the user can continue to recommendation, compare brand sizes, and search for shoes.
       </p>
     </section>
 
     <section class="card">
-      <h2>Measurement summary</h2>
-      <div id="qr-measurement-summary">No measurement parameters provided.</div>
+      <h2 data-i18n="qr.summaryTitle">Measurement summary</h2>
+      <div id="qr-measurement-summary" data-i18n="qr.summaryEmpty">No measurement parameters provided.</div>
     </section>
 
     <section class="card">
-      <h2>Next actions</h2>
+      <h2 data-i18n="qr.nextTitle">Next actions</h2>
       <div class="action-grid">
         <a class="action-card" id="go-recommendation" href="recommend.html">
-          <h3>Recommendation</h3>
-          <p>View general and brand-specific size recommendation.</p>
+          <h3 data-i18n="qr.recommendationTitle">Recommendation</h3>
+          <p data-i18n="qr.recommendationText">View general and brand-specific size recommendation.</p>
         </a>
 
         <a class="action-card" id="go-brand-sizes" href="brand-sizes.html">
-          <h3>Brand Sizes</h3>
-          <p>Compare manufacturer shoe size tables.</p>
+          <h3 data-i18n="qr.brandSizesTitle">Brand Sizes</h3>
+          <p data-i18n="qr.brandSizesText">Compare manufacturer shoe size tables.</p>
         </a>
 
         <a class="action-card" id="go-search" href="search.html">
-          <h3>Shoe Search</h3>
-          <p>Search shoes by brand, model, and size.</p>
+          <h3 data-i18n="qr.searchTitle">Shoe Search</h3>
+          <p data-i18n="qr.searchText">Search shoes by brand, model, and size.</p>
         </a>
       </div>
     </section>
 
     <section class="card">
-      <h2>About QR integration</h2>
-      <p>
-        The QR code can later redirect users directly to this page with measurement parameters,
-        for example foot length, selected category, device ID, or language.
+      <h2 data-i18n="qr.aboutTitle">About QR integration</h2>
+      <p data-i18n="qr.aboutText">
+        The QR code can later redirect users directly to this page with measurement parameters, for example foot length, selected category, device ID, or language.
       </p>
-      <p id="qr-status">QR landing page ready.</p>
+      <p id="qr-status" data-i18n="qr.statusReady">QR landing page ready.</p>
     </section>
   </main>
-<script src="../lang.js"></script>
+
+  <script src="../lang.js"></script>
+  <script src="../supabase-config.js"></script>
   <script src="qr.js"></script>
 </body>
 </html>
