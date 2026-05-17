@@ -114,7 +114,3 @@ async function loadStatistics() {
 }
 
 loadStatsButton.addEventListener("click", loadStatistics);
-
-window.addEventListener("languageChanged", () => {
-  location.reload();
-});
