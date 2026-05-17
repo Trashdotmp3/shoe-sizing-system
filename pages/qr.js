@@ -1,3 +1,5 @@
+const t = window.t;
+
 const summaryEl = document.getElementById("qr-measurement-summary");
 const qrStatusEl = document.getElementById("qr-status");
 
@@ -7,6 +9,24 @@ const searchLink = document.getElementById("go-search");
 
 const SUPABASE_URL = window.SUPABASE_URL;
 const SUPABASE_KEY = window.SUPABASE_KEY;
+
+async function insertRow(table, payload) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Insert failed (${table}): ${response.status} ${text}`);
+  }
+}
 
 function getParams() {
   const params = new URLSearchParams(window.location.search);
@@ -23,14 +43,14 @@ function getParams() {
 function formatSummary(data) {
   const items = [];
 
-  if (data.length) items.push(`<div><strong>Measured length:</strong> ${data.length} mm</div>`);
-  if (data.category) items.push(`<div><strong>Category:</strong> ${data.category}</div>`);
+  if (data.length) items.push(`<div><strong>${t("common.measuredLength")}:</strong> ${data.length} mm</div>`);
+  if (data.category) items.push(`<div><strong>${t("common.category")}:</strong> ${data.category}</div>`);
   if (data.lang) items.push(`<div><strong>Language:</strong> ${data.lang}</div>`);
-  if (data.device) items.push(`<div><strong>Device:</strong> ${data.device}</div>`);
-  if (data.source) items.push(`<div><strong>Source:</strong> ${data.source}</div>`);
+  if (data.device) items.push(`<div><strong>${t("common.device")}:</strong> ${data.device}</div>`);
+  if (data.source) items.push(`<div><strong>${t("common.source")}:</strong> ${data.source}</div>`);
 
   if (!items.length) {
-    return "<p>No measurement parameters provided.</p>";
+    return `<p>${t("qr.summaryEmpty")}</p>`;
   }
 
   return `<div class="result-grid">${items.join("")}</div>`;
@@ -75,30 +95,16 @@ function initQrPage() {
   buildForwardLinks(data);
 
   if (data.length || data.category || data.lang || data.device || data.source) {
-    qrStatusEl.textContent = "QR parameters loaded successfully.";
+    qrStatusEl.textContent = t("qr.statusLoaded");
   } else {
-    qrStatusEl.textContent = "QR page opened without measurement parameters.";
+    qrStatusEl.textContent = t("qr.statusEmpty");
   }
 
   logQrScan(data);
 }
 
-async function insertRow(table, payload) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Insert failed (${table}): ${response.status} ${text}`);
-  }
-}
-
 initQrPage();
+
+window.addEventListener("languageChanged", () => {
+  location.reload();
+});
