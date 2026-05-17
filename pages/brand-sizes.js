@@ -1,3 +1,6 @@
+const t = window.t;
+const tf = window.tf;
+
 const statusEl = document.getElementById("brand-status");
 const sourceEl = document.getElementById("brand-source");
 const resultsEl = document.getElementById("brand-results");
@@ -61,12 +64,12 @@ function createTable(title, rows) {
   section.appendChild(heading);
 
   const note = document.createElement("p");
-  note.textContent = "Displayed length is adjusted for recommendation with 20 mm comfort allowance.";
+  note.textContent = t("brands.note");
   section.appendChild(note);
 
   if (!rows.length) {
     const empty = document.createElement("p");
-    empty.textContent = "No data found.";
+    empty.textContent = t("brands.noData");
     section.appendChild(empty);
     return section;
   }
@@ -77,15 +80,15 @@ function createTable(title, rows) {
   const thead = document.createElement("thead");
   thead.innerHTML = `
     <tr>
-      <th>Recommended foot length (mm)</th>
-      <th>EU</th>
-      <th>US</th>
-      <th>UK</th>
-      <th>AUS</th>
-      <th>JP</th>
-      <th>CN</th>
-      <th>MX</th>
-      <th>KR</th>
+      <th>${t("brands.recommendedLength")}</th>
+      <th>${t("common.eu")}</th>
+      <th>${t("common.us")}</th>
+      <th>${t("common.uk")}</th>
+      <th>${t("common.aus")}</th>
+      <th>${t("common.jp")}</th>
+      <th>${t("common.cn")}</th>
+      <th>${t("common.mx")}</th>
+      <th>${t("common.kr")}</th>
     </tr>
   `;
   table.appendChild(thead);
@@ -118,7 +121,7 @@ function createTable(title, rows) {
 
 async function loadBrandSizes() {
   try {
-    statusEl.textContent = "Loading data from Supabase...";
+    statusEl.textContent = t("brands.statusLoading");
     resultsEl.innerHTML = "";
 
     const selectedCategory = categorySelect.value;
@@ -145,7 +148,15 @@ async function loadBrandSizes() {
       resultsEl.appendChild(createTable(item.brandName, item.rows));
     });
 
-    statusEl.textContent = `Loaded ${chartsWithRows.length} recommended brand size tables with 20 mm allowance for "${selectedCategory}".`;
+    const categoryLabel =
+      selectedCategory === "men" ? t("common.men") :
+      selectedCategory === "women" ? t("common.women") :
+      t("common.kids");
+
+    statusEl.textContent = tf("brands.statusLoaded", {
+      count: chartsWithRows.length,
+      category: categoryLabel
+    });
   } catch (error) {
     console.error(error);
     statusEl.textContent = `Error loading data: ${error.message}`;
@@ -161,8 +172,8 @@ function applyUrlParams() {
   }
 
   const parts = [];
-  if (params.source) parts.push(`Source: ${params.source}`);
-  if (params.device) parts.push(`Device: ${params.device}`);
+  if (params.source) parts.push(`${t("common.source")}: ${params.source}`);
+  if (params.device) parts.push(`${t("common.device")}: ${params.device}`);
   if (params.lang) parts.push(`Language: ${params.lang}`);
 
   sourceEl.textContent = parts.length ? parts.join(" | ") : "";
@@ -176,7 +187,11 @@ window.addEventListener("DOMContentLoaded", async () => {
   const info = applyUrlParams();
 
   if (info.hasCategory) {
-    statusEl.textContent = "URL parameters detected. Loading brand size tables automatically...";
+    statusEl.textContent = t("brands.statusAuto");
     await loadBrandSizes();
   }
+});
+
+window.addEventListener("languageChanged", () => {
+  location.reload();
 });
