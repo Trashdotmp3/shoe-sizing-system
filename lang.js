@@ -5,7 +5,6 @@
         home: "Home",
         recommendation: "Recommendation",
         brandSizes: "Brand Sizes",
-        qrPage: "QR Page",
         search: "Search",
         statistics: "Statistics"
       },
@@ -84,26 +83,6 @@
         noData: "No data found.",
         recommendedLength: "Recommended foot length (mm)"
       },
-      qr: {
-        title: "QR Landing Page",
-        subtitle: "QR landing page for measurement results and further actions",
-        welcomeTitle: "Welcome",
-        welcomeText: "This page is opened after scanning the QR code from the automatic shoe sizing system. Here the user can continue to recommendation, compare brand sizes, and search for shoes.",
-        summaryTitle: "Measurement summary",
-        summaryEmpty: "No measurement parameters provided.",
-        nextTitle: "Next actions",
-        recommendationTitle: "Recommendation",
-        recommendationText: "View general and brand-specific size recommendation.",
-        brandSizesTitle: "Brand Sizes",
-        brandSizesText: "Compare manufacturer shoe size tables.",
-        searchTitle: "Shoe Search",
-        searchText: "Search shoes by brand, model, and size.",
-        aboutTitle: "About QR integration",
-        aboutText: "The QR code can later redirect users directly to this page with measurement parameters, for example foot length, selected category, device ID, or language.",
-        statusReady: "QR landing page ready.",
-        statusLoaded: "QR parameters loaded successfully.",
-        statusEmpty: "QR page opened without measurement parameters."
-      },
       stats: {
         title: "Statistics",
         subtitle: "Collected measurement, QR, and search statistics",
@@ -149,7 +128,6 @@
         home: "Pradžia",
         recommendation: "Rekomendacija",
         brandSizes: "Gamintojų dydžiai",
-        qrPage: "QR puslapis",
         search: "Paieška",
         statistics: "Statistika"
       },
@@ -227,26 +205,6 @@
         note: "Rodomas ilgis jau perskaičiuotas rekomendacijai su 20 mm patogumo laisvumu.",
         noData: "Duomenų nerasta.",
         recommendedLength: "Rekomenduojamas pėdos ilgis (mm)"
-      },
-      qr: {
-        title: "QR nukreipimo puslapis",
-        subtitle: "QR puslapis matavimo rezultatams ir tolimesniems veiksmams",
-        welcomeTitle: "Sveiki",
-        welcomeText: "Šis puslapis atidaromas nuskaičius QR kodą iš automatinės avalynės dydžio nustatymo sistemos. Čia galima pereiti prie rekomendacijos, palyginti gamintojų dydžius ir ieškoti batų.",
-        summaryTitle: "Matavimo santrauka",
-        summaryEmpty: "Matavimo parametrų nepateikta.",
-        nextTitle: "Tolimesni veiksmai",
-        recommendationTitle: "Rekomendacija",
-        recommendationText: "Peržiūrėti bendrą ir gamintojų dydžių rekomendaciją.",
-        brandSizesTitle: "Gamintojų dydžiai",
-        brandSizesText: "Palyginti gamintojų dydžių lenteles.",
-        searchTitle: "Batų paieška",
-        searchText: "Ieškoti batų pagal gamintoją, modelį ir dydį.",
-        aboutTitle: "Apie QR integraciją",
-        aboutText: "QR kodas vėliau gali nukreipti tiesiai į šį puslapį su matavimo parametrais, pavyzdžiui, pėdos ilgiu, pasirinkta kategorija, įrenginio ID ar kalba.",
-        statusReady: "QR puslapis paruoštas.",
-        statusLoaded: "QR parametrai sėkmingai įkelti.",
-        statusEmpty: "QR puslapis atidarytas be matavimo parametrų."
       },
       stats: {
         title: "Statistika",
