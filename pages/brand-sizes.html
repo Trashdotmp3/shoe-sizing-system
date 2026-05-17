@@ -8,40 +8,43 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>Brand Sizes</h1>
+    <h1 data-i18n="brands.title">Brand Sizes</h1>
+
     <div class="lang-switch">
-  <button class="lang-btn" data-lang-button="lt">LT</button>
-  <button class="lang-btn" data-lang-button="en">EN</button>
-</div>
+      <button class="lang-btn" data-lang-button="lt">LT</button>
+      <button class="lang-btn" data-lang-button="en">EN</button>
+    </div>
   </header>
 
-<nav class="main-nav">
-  <a href="../index.html">Home</a>
-  <a href="recommend.html">Recommendation</a>
-  <a href="brand-sizes.html">Brand Sizes</a>
-  <a href="qr.html">QR Page</a>
-  <a href="search.html">Search</a>
-  <a href="stats.html">Statistics</a>
-</nav>
+  <nav class="main-nav">
+    <a href="../index.html" data-i18n="nav.home">Home</a>
+    <a href="recommend.html" data-i18n="nav.recommendation">Recommendation</a>
+    <a href="brand-sizes.html" data-i18n="nav.brandSizes">Brand Sizes</a>
+    <a href="qr.html" data-i18n="nav.qrPage">QR Page</a>
+    <a href="search.html" data-i18n="nav.search">Search</a>
+    <a href="stats.html" data-i18n="nav.statistics">Statistics</a>
+  </nav>
 
   <main class="container">
     <section class="card">
-      <h2>Choose category</h2>
-      <label for="category-select">Category:</label>
+      <h2 data-i18n="brands.chooseTitle">Choose category</h2>
+
+      <label for="category-select" data-i18n="brands.categoryLabel">Category</label>
       <select id="category-select">
-        <option value="men">Men</option>
-        <option value="women">Women</option>
-        <option value="kids">Kids</option>
+        <option value="men" data-i18n="common.men">Men</option>
+        <option value="women" data-i18n="common.women">Women</option>
+        <option value="kids" data-i18n="common.kids">Kids</option>
       </select>
-      <button id="load-sizes-button">Load brand sizes</button>
-      <p id="brand-status">Ready to load data.</p>
+
+      <button id="load-sizes-button" data-i18n="brands.loadButton">Load brand sizes</button>
+      <p id="brand-status" data-i18n="brands.statusReady">Ready to load data.</p>
       <p id="brand-source"></p>
     </section>
 
     <section id="brand-results" class="container"></section>
   </main>
-  
-<script src="../lang.js"></script>
+
+  <script src="../lang.js"></script>
   <script src="../supabase-config.js"></script>
   <script src="brand-sizes.js"></script>
 </body>
